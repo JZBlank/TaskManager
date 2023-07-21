@@ -2,7 +2,13 @@
 import tkinter as tk
 from datetime import date
 import time
- 
+
+# Variables 
+done = 0
+incomplete = 0
+inProcess = 0
+total = 0
+
 # Create window Tkinter
 window = tk.Tk()
  
@@ -40,8 +46,8 @@ frame.place(x=20, y=90)
 label2 = tk.Label(frame, text="Today", bg="blue", fg="white").pack(anchor="w", pady=5, padx=20)
 frame.pack_propagate(0)
 
-# Task Items
-taskItems = ["Walk the dog", "Go to School", "Do Homework", "TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"]
+# Task Items (Matrix)
+taskItems = [["Walk the dog", "Done"], ["Go to School", "Incomplete"], ["Do Homework", "Done"], ["Test", "In Process"]]
 
 # for task in taskItems:
 #     canvas= tk.Canvas(window, height= 20, width= 400, bg="gray", highlightthickness=0)
@@ -59,10 +65,41 @@ def update_time():
     label["text"] = timeNow
     window.after(1000, update_time)
 
+def angle(n):
+    return n
+
+def calculations(done, incomplete, inProcess, total):
+    for item, status in taskItems:
+        if status == "Done":
+            done += 1
+            total += 1
+        elif status == "Incomplete":
+            incomplete += 1
+            total += 1
+        elif status == "In Process":
+            inProcess += 1
+            total += 1
+
+    return [(done/total)*360, (incomplete/total)*360, (inProcess/total)*360]
+
+def pie_chart():
+    degrees = calculations(done, incomplete, inProcess, total)
+    tk.Label(frame, text="Pie Chart").pack()
+    canvas = tk.Canvas(window, width=200, height=200, bg="black", highlightthickness=0)
+    canvas.pack(anchor="ne")
+    canvas.place(x=490, y=30)
+    canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(degrees[0]))
+    canvas.create_arc((2,2,150,150), fill="red", outline="red", start=angle(degrees[0]), extent=angle(degrees[1]))
+    canvas.create_arc((2,2,150,150), fill="orange", outline="orange", start=angle(degrees[0] + degrees[1]), extent=angle(degrees[2]))
+
+# -------------------------------------------
+
+pie_chart()
+
 btn1 = tk.Button(window, text="Add New Task",
 fg="white",
 bg="#0066FF")
-btn1.pack(anchor="s", pady=200)
+btn1.pack(anchor="s", pady=100)
 
 # Every second, the function update_time is called, updating time
 window.after(1000, update_time)
