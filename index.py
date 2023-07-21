@@ -68,7 +68,8 @@ def update_time():
 def angle(n):
     return n
 
-def calculations(done, incomplete, inProcess, total):
+def calculations():
+    global done, incomplete, inProcess, total
     for item, status in taskItems:
         if status == "Done":
             done += 1
@@ -79,11 +80,10 @@ def calculations(done, incomplete, inProcess, total):
         elif status == "In Process":
             inProcess += 1
             total += 1
-
     return [(done/total)*360, (incomplete/total)*360, (inProcess/total)*360]
 
 def pie_chart():
-    degrees = calculations(done, incomplete, inProcess, total)
+    degrees = calculations()
     tk.Label(frame, text="Pie Chart").pack()
     canvas = tk.Canvas(window, width=200, height=200, bg="black", highlightthickness=0)
     canvas.pack(anchor="ne")
@@ -92,9 +92,31 @@ def pie_chart():
     canvas.create_arc((2,2,150,150), fill="red", outline="red", start=angle(degrees[0]), extent=angle(degrees[1]))
     canvas.create_arc((2,2,150,150), fill="orange", outline="orange", start=angle(degrees[0] + degrees[1]), extent=angle(degrees[2]))
 
+
+def summary_data():
+    # FRAME FOR SUMMARY
+    frame = tk.Frame(window, height=20, width=150, bg="blue")
+    frame.place(x=490, y=230)
+    label2 = tk.Label(frame, text="Summary", bg="blue", fg="white").pack(anchor="n")
+    frame.pack_propagate(0)
+    _y = 270
+
+    arr = [["Total Tasks:", total], ["Completed:", done], ["Missing:", incomplete], ["In Process:", inProcess]]
+    for item, count in arr:
+        # Create a label widget in Tkinter
+        label = tk.Label(window, text = item + " " + str(count),
+        fg = "white",
+        bg = "black",
+        font=('Calibri 10'))
+        label.pack()
+        label.place(x=500, y=_y)
+        _y += 20
+
 # -------------------------------------------
 
 pie_chart()
+summary_data()
+
 
 btn1 = tk.Button(window, text="Add New Task",
 fg="white",
