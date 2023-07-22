@@ -128,8 +128,24 @@ def check_task_status(status):
         return "orange"
     return "gray"
 
-def label_clicked(event,text):
-    print(event, text,"Label clicked!")  
+previousClicked = ""
+isClicked = False
+
+def label_clicked(event, text):
+    global isClicked, previousClicked
+    if isClicked == False:
+        event.widget.config(borderwidth=4, relief="raised") 
+        previousClicked = event.widget
+        isClicked = True 
+        
+    elif isClicked == True:
+        if previousClicked == event.widget:
+            event.widget.config(borderwidth=4, relief="flat") 
+            isClicked = False
+        else:
+            previousClicked.config(relief="flat") 
+            event.widget.config(borderwidth=4, relief="raised") 
+            previousClicked = event.widget
 
 def bind_task_item(task, num):
     task.bind("<Button-1>", lambda e: label_clicked(e, tasks[num]))
@@ -142,7 +158,7 @@ def display_task_list():
     for i in range(0, total):
         item = tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2)
         bind_task_item(item, i)
-        
+
     frame.pack_propagate(0)
 
 # -------------------------------------------
