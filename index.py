@@ -48,7 +48,7 @@ label2 = tk.Label(frame, text="Today", bg="blue", fg="white").pack(anchor="w", p
 frame.pack_propagate(0)
 
 # Task Items (Matrix)
-taskItems = [["Walk the dog", "Done"], ["Go to School", "Incomplete"], ["Do Homework", "Done"], ["Test", "In Process"], ["Code", "In Process"]]
+taskItems = [["Walk the dog", "Done"], ["Go to School", "Incomplete"], ["Do Homework", "Done"], ["Test", "In Process"], ["Code", "In Process"],["Go shopping", "Done"], ["Buy Food", "Done"]]
 taskItems.sort(key=lambda x: x[1])
 
 tasks = []
@@ -101,7 +101,7 @@ def summary_data():
     frame.pack_propagate(0)
     _y = 270
 
-    arr = [["Total Tasks:", total], ["Completed:", done], ["Missing:", incomplete], ["In Process:", inProcess]]
+    arr = [["Total Tasks:      ", total], ["Completed:       ", done], ["In Process:        ", inProcess], ["Missing:            ", incomplete]]
     for item, count in arr:
         # Create a label widget in Tkinter
         label = tk.Label(window, text = item + " " + str(count),
@@ -134,32 +134,43 @@ isClicked = False
 def label_clicked(event, text):
     global isClicked, previousClicked
     if isClicked == False:
-        event.widget.config(borderwidth=4, relief="raised") 
+        event.widget.config(relief="raised") 
         previousClicked = event.widget
         isClicked = True 
         
     elif isClicked == True:
         if previousClicked == event.widget:
-            event.widget.config(borderwidth=4, relief="flat") 
+            event.widget.config( relief="flat") 
             isClicked = False
         else:
             previousClicked.config(relief="flat") 
-            event.widget.config(borderwidth=4, relief="raised") 
+            event.widget.config(relief="raised") 
             previousClicked = event.widget
 
 def bind_task_item(task, num):
     task.bind("<Button-1>", lambda e: label_clicked(e, tasks[num]))
-    task.pack(anchor="w", pady=7) 
+    task.pack(pady=5)  
 
 def display_task_list():
-    frame = tk.Frame(window, height=300, width=400, bg="black")
-    frame.place(x=20, y=120)
+    frame = tk.Frame(window, height=300, width=400, bg="black", borderwidth= 0, highlightthickness=0)
+    canvas = tk.Canvas(frame, height=300, width=400, bg="black", borderwidth= 0, highlightthickness=0)
+
+    scrollbar = tk.Scrollbar(frame, orient="vertical", command=canvas.yview, borderwidth= 0, highlightthickness=0, width=5)
+    scrollable_frame = tk.Frame(canvas, background="black", borderwidth= 0, highlightthickness=0)
+
+    scrollable_frame.bind("<Configure>", lambda e : canvas.configure(scrollregion=canvas.bbox("all")))
+    canvas.create_window((0,0), window=scrollable_frame, anchor="nw")
+
+    canvas.configure(yscrollcommand=scrollbar.set)
+    canvas.config(background="black")
 
     for i in range(0, total):
-        item = tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2)
-        bind_task_item(item, i)
+        item = tk.Label(scrollable_frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=140, height=2,highlightthickness=0, borderwidth=4, anchor="nw")
+        bind_task_item(item, i) 
 
-    frame.pack_propagate(0)
+    frame.pack(side="left", padx=20)
+    canvas.pack(side="left", fill="both", expand=True, ipady=15)
+    scrollbar.pack(side="right",fill="both")
 
 # -------------------------------------------
 
@@ -173,7 +184,7 @@ btn1 = tk.Button(window, text="Add New Task",
 fg="white",
 bg="#0066FF")
 btn1.pack(anchor="s")
-btn1.place(x=150, y=450)
+btn1.place(x=150, y=460)
 
 # Every second, the function update_time is called, updating time
 window.after(1000, update_time)
