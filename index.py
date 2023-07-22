@@ -48,7 +48,7 @@ label2 = tk.Label(frame, text="Today", bg="blue", fg="white").pack(anchor="w", p
 frame.pack_propagate(0)
 
 # Task Items (Matrix)
-taskItems = [["Walk the dog", "Done"], ["Go to School", "Incomplete"], ["Do Homework", "Done"], ["Test", "In Process"]]
+taskItems = [["Walk the dog", "Done"], ["Go to School", "Incomplete"], ["Do Homework", "Done"], ["Test", "In Process"], ["Code", "In Process"]]
 taskItems.sort(key=lambda x: x[1])
 
 tasks = []
@@ -119,9 +119,6 @@ def list_data():
     tk.Label(frame, text="RANDOM TEXT", bg="green", fg="white").pack(anchor="n")
     frame.pack_propagate(0)
 
-def click_frame(event):
-    print(event.widget.widget)
-
 def check_task_status(status):
     if status == "Done":
         return "green"
@@ -131,16 +128,59 @@ def check_task_status(status):
         return "orange"
     return "gray"
 
+def label_clicked(event,text):
+    print(event, text,"Label clicked!")  
+
 def display_task_list():
-    # FRAME FOR TODAY 
     frame = tk.Frame(window, height=300, width=400, bg="black")
     frame.place(x=20, y=120)
-    
-    for i in range(0, len(taskItems)):
-        tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2).pack(anchor="w", pady=7)
-        frame.widget = "frame_" + str(i)
-        frame.bind("<Button-1>", click_frame)
-        frame.pack_propagate(0)
+
+    task_label_1 = task_label_2 = task_label_3 = task_label_4 = task_label_5 = task_label_6 = task_label_7 = task_label_8 = task_label_9 = task_label_10 = tk.Label
+
+    # FIND A BETTER WAY TO IMPLEMENT THIS ***
+    for i in range(0, total):
+        if i == 0:
+            task_label_1 = tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2)
+            task_label_1.bind("<Button-1>",  lambda e: label_clicked(e, taskItems[0][0]))
+            task_label_1.pack(anchor="w", pady=7)
+        elif i == 1:
+            task_label_2 = tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2)
+            task_label_2.bind("<Button-1>",  lambda e: label_clicked(e, taskItems[1][0]))
+            task_label_2.pack(anchor="w", pady=7)
+        elif i == 2:
+            task_label_3 = tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2)
+            task_label_3.bind("<Button-1>",  lambda e: label_clicked(e, taskItems[2][0]))
+            task_label_3.pack(anchor="w", pady=7)
+        elif i == 3:
+            task_label_4 = tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2)
+            task_label_4.bind("<Button-1>",  lambda e: label_clicked(e, taskItems[3][0]))
+            task_label_4.pack(anchor="w", pady=7)
+        elif i == 4:
+            task_label_5 = tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2)
+            task_label_5.bind("<Button-1>",  lambda e: label_clicked(e, taskItems[4][0]))
+            task_label_5.pack(anchor="w", pady=7)
+        elif i == 5: 
+            task_label_6 = tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2)
+            task_label_6.bind("<Button-1>",  lambda e: label_clicked(e, taskItems[5][0]))
+            task_label_6.pack(anchor="w", pady=7)
+        elif i == 6: 
+            task_label_7 = tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2)
+            task_label_7.bind("<Button-1>",  lambda e: label_clicked(e, taskItems[6][0]))
+            task_label_7.pack(anchor="w", pady=7)
+        elif i == 7: 
+            task_label_8 = tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2)
+            task_label_8.bind("<Button-1>",  lambda e: label_clicked(e, taskItems[7][0]))
+            task_label_8.pack(anchor="w", pady=7)
+        elif i == 8: 
+            task_label_9 = tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2)
+            task_label_9.bind("<Button-1>",  lambda e: label_clicked(e, taskItems[8][0]))
+            task_label_9.pack(anchor="w", pady=7)
+        elif i == 9: 
+            task_label_10 = tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2)
+            task_label_10.bind("<Button-1>",  lambda e: label_clicked(e, taskItems[9][0]))
+            task_label_10.pack(anchor="w", pady=7)
+
+    frame.pack_propagate(0)
 
 # -------------------------------------------
 
