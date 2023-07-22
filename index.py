@@ -17,7 +17,8 @@ window.title(" Task Manager ")
  
 # Define window size in Tkinter python
 window.geometry("700x500")
- 
+window.update_idletasks() # Redraw widgets without calling any callbacks *Updates size of window*
+
 # Define window background color
 window['background'] = 'black'
 window['highlightbackground'] = 'black'
@@ -48,16 +49,15 @@ frame.pack_propagate(0)
 
 # Task Items (Matrix)
 taskItems = [["Walk the dog", "Done"], ["Go to School", "Incomplete"], ["Do Homework", "Done"], ["Test", "In Process"]]
+taskItems.sort(key=lambda x: x[1])
 
-# for task in taskItems:
-#     canvas= tk.Canvas(window, height= 20, width= 400, bg="gray", highlightthickness=0)
-
-#     # Add a text in Canvas
-#     canvas.create_text(0, 0, text=task, fill="white", font=('Helvetica 15 bold', 10, 'bold'))
-#     canvas.pack(anchor="w", pady=5, padx=20)
-
+tasks = []
 
 # -------------------------------------------
+
+def extract_task_data():
+    for task, status in taskItems:
+        tasks.append(task)
 
 def update_time():
     currentTime = time.localtime()
@@ -97,7 +97,7 @@ def summary_data():
     # FRAME FOR SUMMARY
     frame = tk.Frame(window, height=20, width=150, bg="blue")
     frame.place(x=490, y=230)
-    label2 = tk.Label(frame, text="Summary", bg="blue", fg="white").pack(anchor="n")
+    tk.Label(frame, text="Summary", bg="blue", fg="white").pack(anchor="n")
     frame.pack_propagate(0)
     _y = 270
 
@@ -112,16 +112,49 @@ def summary_data():
         label.place(x=500, y=_y)
         _y += 20
 
+def list_data():
+    # FRAME FOR EACH ITEM
+    frame = tk.Frame(window, height=100, width=150, bg="blue")
+    frame.place(x=490, y=230)
+    tk.Label(frame, text="RANDOM TEXT", bg="green", fg="white").pack(anchor="n")
+    frame.pack_propagate(0)
+
+def click_frame(event):
+    print(event.widget.widget)
+
+def check_task_status(status):
+    if status == "Done":
+        return "green"
+    elif status == "Incomplete":
+        return "red"
+    elif status == "In Process":
+        return "orange"
+    return "gray"
+
+def display_task_list():
+    # FRAME FOR TODAY 
+    frame = tk.Frame(window, height=300, width=400, bg="black")
+    frame.place(x=20, y=120)
+    
+    for i in range(0, len(taskItems)):
+        tk.Label(frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=400, height=2).pack(anchor="w", pady=7)
+        frame.widget = "frame_" + str(i)
+        frame.bind("<Button-1>", click_frame)
+        frame.pack_propagate(0)
+
 # -------------------------------------------
 
+extract_task_data()
 pie_chart()
 summary_data()
+display_task_list()
 
 
 btn1 = tk.Button(window, text="Add New Task",
 fg="white",
 bg="#0066FF")
-btn1.pack(anchor="s", pady=100)
+btn1.pack(anchor="s")
+btn1.place(x=150, y=450)
 
 # Every second, the function update_time is called, updating time
 window.after(1000, update_time)
