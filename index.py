@@ -147,7 +147,16 @@ def label_clicked(event, text):
             event.widget.config(relief="raised") 
             previousClicked = event.widget
 
-def bind_task_item(task, num):
+def bind_task_item(task, num, command):
+
+    # Scrolling with mouse wheel 
+    # task.bind("<Enter>", lambda _: task.bind_all('MouseWheel', command))
+    # task.bind("<Leave>", lambda _: task.unbind_all('<MouseWheel>'))
+
+    # task.bind("<Enter>", lambda _: task.config(text="welcome"))
+    # task.bind('<Leave>', lambda _: task.config(text="thanks"))
+
+    # Clicking labels
     task.bind("<Button-1>", lambda e: label_clicked(e, tasks[num]))
     task.pack(pady=5)  
 
@@ -166,7 +175,7 @@ def display_task_list():
 
     for i in range(0, total):
         item = tk.Label(scrollable_frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=140, height=2,highlightthickness=0, borderwidth=4, anchor="nw")
-        bind_task_item(item, i) 
+        bind_task_item(item, i, lambda e: item.config(text= 'Works')) 
 
     frame.pack(side="left", padx=20)
     canvas.pack(side="left", fill="both", expand=True, ipady=15)
