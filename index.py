@@ -161,8 +161,8 @@ def bind_task_item(task, num, command):
     task.pack(pady=5)  
 
 def display_task_list():
-    frame = tk.Frame(window, height=300, width=400, bg="black", borderwidth= 0, highlightthickness=0)
-    canvas = tk.Canvas(frame, height=300, width=400, bg="black", borderwidth= 0, highlightthickness=0)
+    frame = tk.Frame(window, height=290, width=400, bg="black", borderwidth= 0, highlightthickness=0)
+    canvas = tk.Canvas(frame, height=290, width=400, bg="black", borderwidth= 0, highlightthickness=0)
 
     scrollbar = tk.Scrollbar(frame, orient="vertical", command=canvas.yview, borderwidth= 0, highlightthickness=0, width=5)
     scrollable_frame = tk.Frame(canvas, background="black", borderwidth= 0, highlightthickness=0)
@@ -178,7 +178,7 @@ def display_task_list():
         bind_task_item(item, i, lambda e: item.config(text= 'Works')) 
 
     frame.pack(side="left", padx=20)
-    canvas.pack(side="left", fill="both", expand=True, ipady=15)
+    canvas.pack(side="left", fill="both", expand=True, ipady=10)
     scrollbar.pack(side="right",fill="both")
 
 # -------------------------------------------
