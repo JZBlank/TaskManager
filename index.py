@@ -50,6 +50,7 @@ frame.pack_propagate(0)
 # Task Items (Matrix)
 taskItems = [["Walk the dog", "Done"], ["Go to School", "Incomplete"], ["Do Homework", "Done"], ["Test", "In Process"], ["Code", "In Process"],["Go shopping", "Done"], ["Buy Food", "Done"]]
 taskItems.sort(key=lambda x: x[1])
+#taskItems = []
 
 tasks = []
 
@@ -83,14 +84,18 @@ def calculations():
     return [(done/total)*360, (incomplete/total)*360, (inProcess/total)*360]
 
 def pie_chart():
-    degrees = calculations()
     tk.Label(frame, text="Pie Chart").pack()
     canvas = tk.Canvas(window, width=200, height=200, bg="black", highlightthickness=0)
     canvas.pack(anchor="ne")
     canvas.place(x=490, y=30)
-    canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(degrees[0]))
-    canvas.create_arc((2,2,150,150), fill="red", outline="red", start=angle(degrees[0]), extent=angle(degrees[1]))
-    canvas.create_arc((2,2,150,150), fill="orange", outline="orange", start=angle(degrees[0] + degrees[1]), extent=angle(degrees[2]))
+
+    if len(taskItems) == 0:
+        canvas.create_arc((2,2,150,150), fill="gray", outline="gray", start=angle(0), extent=angle(359))
+    else:
+        degrees = calculations()
+        canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(degrees[0]))
+        canvas.create_arc((2,2,150,150), fill="red", outline="red", start=angle(degrees[0]), extent=angle(degrees[1]))
+        canvas.create_arc((2,2,150,150), fill="orange", outline="orange", start=angle(degrees[0] + degrees[1]), extent=angle(degrees[2]))
 
 
 def summary_data():
@@ -161,25 +166,25 @@ def bind_task_item(task, num, command):
     task.pack(pady=5)  
 
 def display_task_list():
-    frame = tk.Frame(window, height=290, width=400, bg="black", borderwidth= 0, highlightthickness=0)
-    canvas = tk.Canvas(frame, height=290, width=400, bg="black", borderwidth= 0, highlightthickness=0)
+    tasklist_frame = tk.Frame(window, height=300, width=400, bg="orange", borderwidth= 0, highlightthickness=0)
+    tasklist_canvas = tk.Canvas(tasklist_frame, height=300, width=400, bg="red", borderwidth= 0, highlightthickness=0)
 
-    scrollbar = tk.Scrollbar(frame, orient="vertical", command=canvas.yview, borderwidth= 0, highlightthickness=0, width=5)
-    scrollable_frame = tk.Frame(canvas, background="black", borderwidth= 0, highlightthickness=0)
+    scrollbar = tk.Scrollbar(tasklist_frame, orient="vertical", command=tasklist_canvas.yview, borderwidth= 0, highlightthickness=0, width=5)
+    scrollable_frame = tk.Frame(tasklist_canvas, background="black", borderwidth= 0, highlightthickness=0)
 
-    scrollable_frame.bind("<Configure>", lambda e : canvas.configure(scrollregion=canvas.bbox("all")))
-    canvas.create_window((0,0), window=scrollable_frame, anchor="nw")
+    scrollable_frame.bind("<Configure>", lambda e : tasklist_canvas.configure(scrollregion=tasklist_canvas.bbox("all")))
+    tasklist_canvas.create_window((0,0), window=scrollable_frame, anchor="nw")
 
-    canvas.configure(yscrollcommand=scrollbar.set)
-    canvas.config(background="black")
+    tasklist_canvas.configure(yscrollcommand=scrollbar.set)
+    tasklist_canvas.config(background="black")
 
     for i in range(0, total):
         item = tk.Label(scrollable_frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=140, height=2,highlightthickness=0, borderwidth=4, anchor="nw")
         bind_task_item(item, i, lambda e: item.config(text= 'Works')) 
 
-    frame.pack(side="left", padx=20)
-    canvas.pack(side="left", fill="both", expand=True, ipady=10)
-    scrollbar.pack(side="right",fill="both")
+    tasklist_frame.pack(side="left",anchor="nw", padx=20, pady=40) # Modify 'pady' to change spacing for tasklist list
+    tasklist_canvas.pack(side="left",anchor="nw", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="both")
 
 # -------------------------------------------
 
