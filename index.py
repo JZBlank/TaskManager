@@ -90,7 +90,7 @@ def pie_chart():
     canvas.place(x=490, y=30)
 
     if len(taskItems) == 0:
-        canvas.create_arc((2,2,150,150), fill="gray", outline="gray", start=angle(0), extent=angle(359))
+        canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(359))
     else:
         degrees = calculations()
         canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(degrees[0]))
@@ -165,6 +165,19 @@ def bind_task_item(task, num, command):
     task.bind("<Button-1>", lambda e: label_clicked(e, tasks[num]))
     task.pack(pady=5)  
 
+def task_list():
+    if len(taskItems) == 0:
+        message_frame = tk.Frame(window, height=60, width=400, bg="red")
+        message_frame.pack(anchor="nw", padx=20, pady=40) 
+
+        message_label = tk.Label(message_frame, text= "No Current Tasks", bg="black", fg="white", width=45, height=2, anchor="nw")
+        message_label.pack(anchor="nw")
+
+    else:
+        display_task_list()
+
+
+
 def display_task_list():
     tasklist_frame = tk.Frame(window, height=300, width=400, bg="orange", borderwidth= 0, highlightthickness=0)
     tasklist_canvas = tk.Canvas(tasklist_frame, height=300, width=400, bg="red", borderwidth= 0, highlightthickness=0)
@@ -186,19 +199,25 @@ def display_task_list():
     tasklist_canvas.pack(side="left",anchor="nw", fill="both", expand=True)
     scrollbar.pack(side="right", fill="both")
 
-# -------------------------------------------
+def task_list_actions():
 
+    # Add a New Task
+    btn1 = tk.Button(window, text="Add New Task",
+    fg="white",
+    bg="#0066FF")
+    btn1.pack(anchor="s")
+    btn1.place(x=20, y=450)
+
+    # Remove a Task
+
+    # Edit a Task
+
+# ------------------------------------------- FUNCTION CALLS -------------------------------------------
 extract_task_data()
 pie_chart()
 summary_data()
-display_task_list()
-
-
-btn1 = tk.Button(window, text="Add New Task",
-fg="white",
-bg="#0066FF")
-btn1.pack(anchor="s")
-btn1.place(x=150, y=460)
+task_list()
+task_list_actions()
 
 # Every second, the function update_time is called, updating time
 window.after(1000, update_time)
