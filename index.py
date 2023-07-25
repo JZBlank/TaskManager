@@ -1,5 +1,7 @@
 # Import library to create GUI (Graphical user Interface)
 import tkinter as tk
+from tkinter import simpledialog
+
 from datetime import date
 import time
 
@@ -7,7 +9,8 @@ import time
 done = 0
 incomplete = 0
 inProcess = 0
-total = 0
+isVisible = False
+created = False
 
 # Create window Tkinter
 window = tk.Tk()
@@ -48,18 +51,28 @@ label2 = tk.Label(frame, text="Today", bg="blue", fg="white").pack(anchor="w", p
 frame.pack_propagate(0)
 
 # Task Items (Matrix)
-taskItems = [["Walk the dog", "Done"], ["Go to School", "Incomplete"], ["Do Homework", "Done"], ["Test", "In Process"], ["Code", "In Process"],["Go shopping", "Done"], ["Buy Food", "Done"]]
-taskItems.sort(key=lambda x: x[1])
-#taskItems = []
+#taskItems = [["Walk the dog", "Done"], ["Go to School", "Incomplete"], ["Do Homework", "Done"], ["Test", "InProcess"], ["Code", "InProcess"],["Go shopping", "Done"], ["Buy Food", "Done"]]
+#taskItems.sort(key=lambda x: x[1])
+taskItems = []
 
 tasks = []
 
+
+tasklist_frame = tk.Frame(window, height=300, width=400, bg="orange", borderwidth= 0, highlightthickness=0)
+tasklist_canvas = tk.Canvas(tasklist_frame, height=300, width=400, bg="red", borderwidth= 0, highlightthickness=0)
+
+scrollbar = tk.Scrollbar(tasklist_frame, orient="vertical", command=tasklist_canvas.yview, borderwidth= 0, highlightthickness=0, width=5)
+scrollable_frame = tk.Frame(tasklist_canvas, background="black", borderwidth= 0, highlightthickness=0)
+
+scrollable_frame.bind("<Configure>", lambda e : tasklist_canvas.configure(scrollregion=tasklist_canvas.bbox("all")))
+tasklist_canvas.create_window((0,0), window=scrollable_frame, anchor="nw")
+
+tasklist_canvas.configure(yscrollcommand=scrollbar.set)
+tasklist_canvas.config(background="black")
+
+# item = tk.Label
+
 # -------------------------------------------
-
-def extract_task_data():
-    for task, status in taskItems:
-        tasks.append(task)
-
 def update_time():
     currentTime = time.localtime()
     timeNow = time.strftime("%-I:%M %p %Z ", currentTime)
@@ -70,18 +83,17 @@ def angle(n):
     return n
 
 def calculations():
-    global done, incomplete, inProcess, total
+    global done, incomplete, inProcess
+    totalTasks = len(taskItems)
     for item, status in taskItems:
         if status == "Done":
             done += 1
-            total += 1
         elif status == "Incomplete":
             incomplete += 1
-            total += 1
-        elif status == "In Process":
+        elif status == "InProcess":
             inProcess += 1
-            total += 1
-    return [(done/total)*360, (incomplete/total)*360, (inProcess/total)*360]
+
+    return [(done/totalTasks)*360, (incomplete/totalTasks)*360, (inProcess/totalTasks)*360]
 
 def pie_chart():
     tk.Label(frame, text="Pie Chart").pack()
@@ -93,9 +105,9 @@ def pie_chart():
         canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(359))
     else:
         degrees = calculations()
-        canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(degrees[0]))
-        canvas.create_arc((2,2,150,150), fill="red", outline="red", start=angle(degrees[0]), extent=angle(degrees[1]))
-        canvas.create_arc((2,2,150,150), fill="orange", outline="orange", start=angle(degrees[0] + degrees[1]), extent=angle(degrees[2]))
+        canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(degrees[0] - 0.5))
+        canvas.create_arc((2,2,150,150), fill="red", outline="red", start=angle(degrees[0]), extent=angle(degrees[1] - 0.5))
+        canvas.create_arc((2,2,150,150), fill="orange", outline="orange", start=angle(degrees[0] + degrees[1]), extent=angle(degrees[2] - 0.5))
 
 
 def summary_data():
@@ -106,7 +118,7 @@ def summary_data():
     frame.pack_propagate(0)
     _y = 270
 
-    arr = [["Total Tasks:      ", total], ["Completed:       ", done], ["In Process:        ", inProcess], ["Missing:            ", incomplete]]
+    arr = [["Total Tasks:      ", len(taskItems)], ["Completed:       ", done], ["In Process:        ", inProcess], ["Missing:            ", incomplete]]
     for item, count in arr:
         # Create a label widget in Tkinter
         label = tk.Label(window, text = item + " " + str(count),
@@ -129,7 +141,7 @@ def check_task_status(status):
         return "green"
     elif status == "Incomplete":
         return "red"
-    elif status == "In Process":
+    elif status == "InProcess":
         return "orange"
     return "gray"
 
@@ -162,62 +174,79 @@ def bind_task_item(task, num, command):
     # task.bind('<Leave>', lambda _: task.config(text="thanks"))
 
     # Clicking labels
-    task.bind("<Button-1>", lambda e: label_clicked(e, tasks[num]))
+    task.bind("<Button-1>", lambda e: label_clicked(e, taskItems[num][0]))
     task.pack(pady=5)  
 
 def task_list():
-    if len(taskItems) == 0:
-        message_frame = tk.Frame(window, height=60, width=400, bg="red")
-        message_frame.pack(anchor="nw", padx=20, pady=40) 
 
-        message_label = tk.Label(message_frame, text= "No Current Tasks", bg="black", fg="white", width=45, height=2, anchor="nw")
+    global isVisible
+
+    message_frame = tk.Frame(window, height=60, width=400, bg="red")
+    message_label = tk.Label(message_frame, text= "No Current Tasks", bg="black", fg="white", width=45, height=2, anchor="nw")
+    
+    if len(taskItems) == 0:
+        message_frame.pack(anchor="nw", padx=20, pady=40) 
         message_label.pack(anchor="nw")
+        isVisible = True
 
     else:
+        message_frame.pack_forget()
+        message_label.pack_forget()
+        isVisible = False
+
         display_task_list()
 
-
-
 def display_task_list():
-    tasklist_frame = tk.Frame(window, height=300, width=400, bg="orange", borderwidth= 0, highlightthickness=0)
-    tasklist_canvas = tk.Canvas(tasklist_frame, height=300, width=400, bg="red", borderwidth= 0, highlightthickness=0)
+    global created
+ 
+    # tasklist_frame = tk.Frame(window, height=300, width=400, bg="orange", borderwidth= 0, highlightthickness=0)
+    # tasklist_canvas = tk.Canvas(tasklist_frame, height=300, width=400, bg="red", borderwidth= 0, highlightthickness=0)
 
-    scrollbar = tk.Scrollbar(tasklist_frame, orient="vertical", command=tasklist_canvas.yview, borderwidth= 0, highlightthickness=0, width=5)
-    scrollable_frame = tk.Frame(tasklist_canvas, background="black", borderwidth= 0, highlightthickness=0)
+    # scrollbar = tk.Scrollbar(tasklist_frame, orient="vertical", command=tasklist_canvas.yview, borderwidth= 0, highlightthickness=0, width=5)
+    # scrollable_frame = tk.Frame(tasklist_canvas, background="black", borderwidth= 0, highlightthickness=0)
 
-    scrollable_frame.bind("<Configure>", lambda e : tasklist_canvas.configure(scrollregion=tasklist_canvas.bbox("all")))
-    tasklist_canvas.create_window((0,0), window=scrollable_frame, anchor="nw")
+    # scrollable_frame.bind("<Configure>", lambda e : tasklist_canvas.configure(scrollregion=tasklist_canvas.bbox("all")))
+    # tasklist_canvas.create_window((0,0), window=scrollable_frame, anchor="nw")
 
-    tasklist_canvas.configure(yscrollcommand=scrollbar.set)
-    tasklist_canvas.config(background="black")
+    # tasklist_canvas.configure(yscrollcommand=scrollbar.set)
+    # tasklist_canvas.config(background="black")
 
-    for i in range(0, total):
-        item = tk.Label(scrollable_frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=140, height=2,highlightthickness=0, borderwidth=4, anchor="nw")
+    pie_chart()
+    summary_data()
+
+    for i in range(0, len(taskItems)):
+        item = tk.Label(scrollable_frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=140, height=2, highlightthickness=0, borderwidth=4, anchor="nw")
         bind_task_item(item, i, lambda e: item.config(text= 'Works')) 
-
+    
     tasklist_frame.pack(side="left",anchor="nw", padx=20, pady=40) # Modify 'pady' to change spacing for tasklist list
     tasklist_canvas.pack(side="left",anchor="nw", fill="both", expand=True)
+    created = True
+
     scrollbar.pack(side="right", fill="both")
+
+def pop_up_window(event):
+    newTask = tk.simpledialog.askstring(title="Add Task", parent=window, prompt="Enter New Task")
+    taskInfo = newTask.split()
+    taskItems.append(taskInfo)
+    task_list()
 
 def task_list_actions():
 
     # Add a New Task
-    btn1 = tk.Button(window, text="Add New Task",
-    fg="white",
-    bg="#0066FF")
-    btn1.pack(anchor="s")
-    btn1.place(x=20, y=450)
+    addNewTask = tk.Button(window, text="Add New Task", fg="white", bg="#0066FF")
+    addNewTask.pack(anchor="s")
+    addNewTask.place(x=20, y=450)
+    addNewTask.bind("<Button-1>", lambda event: pop_up_window(event))
 
     # Remove a Task
 
     # Edit a Task
 
 # ------------------------------------------- FUNCTION CALLS -------------------------------------------
-extract_task_data()
 pie_chart()
 summary_data()
-task_list()
 task_list_actions()
+
 
 # Every second, the function update_time is called, updating time
 window.after(1000, update_time)
