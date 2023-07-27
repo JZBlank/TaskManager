@@ -1,6 +1,7 @@
 # Import library to create GUI (Graphical user Interface)
 import tkinter as tk
 from tkinter import simpledialog
+from tkinter import messagebox
 
 from datetime import date
 import time
@@ -219,10 +220,22 @@ def task_list_items():
     summary_data()
 
 def pop_up_window(event):
-    newTask = tk.simpledialog.askstring(title="Add Task", parent=window, prompt="Enter New Task")
-    taskInfo = newTask.split()
-    taskItems.append(taskInfo)
+    pop_up = tk.Tk()
+    pop_up.title(" Add New Task ")
+    pop_up.geometry("450x200+0+0")
+
+    # center pop_up window
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+
+    #x = (screen_width/2) - (width/2)
+
+    tk.Label(pop_up, text= "Status", fg="white", bg="red", width=200, height=2, highlightthickness=0, borderwidth=4, anchor="nw").pack()
+    test = tk.Entry(pop_up).pack()
+    #taskInfo = test.split()
+    #taskItems.append(taskInfo)
     display_task_list()
+    pop_up.mainloop()
 
 def task_list_actions():
 
