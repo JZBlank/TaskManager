@@ -11,6 +11,7 @@ done = 0
 incomplete = 0
 inProcess = 0
 isVisible = False
+ontop = False
 
 # Create window Tkinter
 window = tk.Tk()
@@ -71,6 +72,8 @@ tasklist_canvas.create_window((0,0), window=scrollable_frame, anchor="nw")
 
 tasklist_canvas.configure(yscrollcommand=scrollbar.set)
 tasklist_canvas.config(background="black")
+
+pop_up = tk.Frame(bg="red")
 
 # -------------------------------------------
 def update_time():
@@ -219,26 +222,45 @@ def task_list_items():
     pie_chart()
     summary_data()
 
+
+def add_new_task(event, newTask, newTaskStatus):
+    global pop_up
+    taskItems.append([newTask, newTaskStatus])
+    display_task_list()
+    pop_up.destroy()
+
 def pop_up_window(event):
-    pop_up = tk.Tk()
+    global pop_up
+    pop_up = tk.Toplevel(bg="black")
+
     pop_up.title(" Add New Task ")
-    pop_up.geometry("450x200+0+0")
 
     # center pop_up window
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
+    screen_width = window.winfo_rootx()
+    screen_height = window.winfo_rooty()
 
-    #x = (screen_width/2) - (width/2)
+    pop_up_x = screen_width + 140
+    pop_up_y = screen_height + 140
 
-    tk.Label(pop_up, text= "Status", fg="white", bg="red", width=200, height=2, highlightthickness=0, borderwidth=4, anchor="nw").pack()
-    test = tk.Entry(pop_up).pack()
-    #taskInfo = test.split()
-    #taskItems.append(taskInfo)
-    display_task_list()
+    pop_up.geometry("300x200")
+
+    pop_up.geometry(f'+{pop_up_x}+{pop_up_y}')
+
+    tk.Label(pop_up, text= "New Task:", fg="white", bg="black", width=20, height=1, highlightthickness=0, borderwidth=4, anchor="nw").pack()
+    newTask = tk.Entry(pop_up)
+    newTask.pack(pady=5)
+
+    tk.Label(pop_up, text= "Status:", fg="white", bg="black", width=20, height=1, highlightthickness=0, borderwidth=4, anchor="nw").pack()
+    newTaskStatus = tk.Entry(pop_up)
+    newTaskStatus.pack()
+
+    addNewTaskButton = tk.Button(pop_up, text="Add", fg="white", bg="#0066FF")
+    addNewTaskButton.pack(anchor="s", pady=10)
+    addNewTaskButton.bind("<Button-1>", lambda event: add_new_task(event, newTask.get(), newTaskStatus.get()))
+
     pop_up.mainloop()
 
 def task_list_actions():
-
     # Add a New Task
     addNewTask = tk.Button(window, text="Add New Task", fg="white", bg="#0066FF")
     addNewTask.pack(anchor="s")
