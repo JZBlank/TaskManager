@@ -86,7 +86,7 @@ def angle(n):
     return n
 
 def calculations():
-    global done, incomplete, inProcess
+    global done, incomplete, inProcess, none
     totalTasks = len(taskItems)
     for item, status in taskItems:
         if status == "Done":
@@ -100,9 +100,11 @@ def calculations():
 
 def pie_chart():
     tk.Label(frame, text="Pie Chart").pack()
-    canvas = tk.Canvas(window, width=200, height=200, bg="black", highlightthickness=0)
+    canvas = tk.Canvas(window, width=200, height=150, bg="black", highlightthickness=0)
     canvas.pack(anchor="ne")
     canvas.place(x=490, y=30)
+
+    #pie_chart_legend(canvas)
 
     if len(taskItems) == 0:
         canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(359))
@@ -113,13 +115,30 @@ def pie_chart():
         canvas.create_arc((2,2,150,150), fill="orange", outline="orange", start=angle(degrees[0] + degrees[1]), extent=angle(degrees[2] -  0.000001))
 
 
+def pie_chart_legend():
+    canvas = tk.Canvas(window, height=80, width=150, bg="black", highlightthickness=0)
+    y_ = 0
+
+    colors = [["red", "Incomplete"], ["orange", "InProcess"], ["green", "Done"],["gray", "None"]]
+    for i in range(0, len(colors)):
+        square = canvas.create_rectangle(0, 0, 10, 10, fill=colors[i][0], outline=colors[i][0])  # Make the rectangle larger
+        canvas.move(square, 30, y_)
+        label = tk.Label(canvas, text=colors[i][1], font=("Arial Bold", 7), bg="black", fg="white")
+        label.place(x=50, y=y_)  # Adjust the position of the label within the canvas
+        y_ += 20
+
+    canvas.pack(anchor="center")
+    canvas.place(x=490, y=200)
+
+    
+
 def summary_data():
     # FRAME FOR SUMMARY
     frame = tk.Frame(window, height=20, width=150, bg="blue")
-    frame.place(x=490, y=230)
+    frame.place(x=490, y=290)
     tk.Label(frame, text="Summary", bg="blue", fg="white").pack(anchor="n")
     frame.pack_propagate(0)
-    _y = 270
+    _y = 320
 
     arr = [["Total Tasks:      ", len(taskItems)], ["Completed:       ", done], ["In Process:        ", inProcess], ["Missing:            ", incomplete]]
     for item, count in arr:
@@ -223,11 +242,24 @@ def task_list_items():
     summary_data()
 
 
+def close_pop_up(event):
+    global ontop
+    ontop = False
+    pop_up.destroy()
+
 def add_new_task(event, newTask, newTaskStatus):
-    global pop_up
+    global pop_up, ontop
     taskItems.append([newTask, newTaskStatus])
     display_task_list()
     pop_up.destroy()
+    ontop = False
+
+def check_pop_window(event):
+    global ontop
+    if ontop == False:
+        ontop = True
+        pop_up_window(event)
+    
 
 def pop_up_window(event):
     global pop_up
@@ -255,8 +287,15 @@ def pop_up_window(event):
     newTaskStatus.pack()
 
     addNewTaskButton = tk.Button(pop_up, text="Add", fg="white", bg="#0066FF")
-    addNewTaskButton.pack(anchor="s", pady=10)
+    addNewTaskButton.place(x=50, y=200)
+    addNewTaskButton.pack(pady=10)
+    
     addNewTaskButton.bind("<Button-1>", lambda event: add_new_task(event, newTask.get(), newTaskStatus.get()))
+
+    cancelNewTask = tk.Button(pop_up, text="Cancel", fg="white", bg="#0066FF")
+    cancelNewTask.place(x=60, y=200)
+    cancelNewTask.pack(pady=10)    
+    cancelNewTask.bind("<Button-1>", lambda event: close_pop_up(event))
 
     pop_up.mainloop()
 
@@ -265,14 +304,16 @@ def task_list_actions():
     addNewTask = tk.Button(window, text="Add New Task", fg="white", bg="#0066FF")
     addNewTask.pack(anchor="s")
     addNewTask.place(x=20, y=450)
-    addNewTask.bind("<Button-1>", lambda event: pop_up_window(event))
+    addNewTask.bind("<Button-1>", lambda event: check_pop_window(event))
 
     # Remove a Task
 
     # Edit a Task
 
+
 # ------------------------------------------- FUNCTION CALLS -------------------------------------------
 pie_chart()
+pie_chart_legend()
 summary_data()
 display_task_list()
 task_list_actions()
