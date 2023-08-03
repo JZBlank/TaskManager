@@ -10,7 +10,6 @@ import time
 done = 0
 incomplete = 0
 inProcess = 0
-isVisible = False
 ontop = False
 
 # Create window Tkinter
@@ -74,6 +73,9 @@ tasklist_canvas.configure(yscrollcommand=scrollbar.set)
 tasklist_canvas.config(background="black")
 
 pop_up = tk.Frame(bg="red")
+deleteTask = tk.Button(window, text="Delete Task", fg="white", bg="gray")
+deleteTask.place(x=150, y=450)
+
 
 # -------------------------------------------
 def update_time():
@@ -130,7 +132,6 @@ def pie_chart_legend():
     canvas.pack(anchor="center")
     canvas.place(x=490, y=200)
 
-    
 
 def summary_data():
     # FRAME FOR SUMMARY
@@ -151,13 +152,6 @@ def summary_data():
         label.place(x=500, y=_y)
         _y += 20
 
-def list_data():
-    # FRAME FOR EACH ITEM
-    frame = tk.Frame(window, height=100, width=150, bg="blue")
-    frame.place(x=490, y=230)
-    tk.Label(frame, text="RANDOM TEXT", bg="green", fg="white").pack(anchor="n")
-    frame.pack_propagate(0)
-
 def check_task_status(status):
     if status == "Done":
         return "green"
@@ -167,24 +161,29 @@ def check_task_status(status):
         return "orange"
     return "gray"
 
-previousClicked = ""
-isClicked = False
+selectedLabel = -1 # Item in TaskList that is clicked (-1 means unselected)
 
-def label_clicked(event, text):
-    global isClicked, previousClicked
-    if isClicked == False:
-        event.widget.config(relief="raised") 
-        previousClicked = event.widget
-        isClicked = True 
-        
-    elif isClicked == True:
-        if previousClicked == event.widget:
-            event.widget.config( relief="flat") 
-            isClicked = False
+def label_clicked(event, text, num):
+    global selectedLabel, deleteTask
+    if selectedLabel == -1:
+        selectedLabel = num 
+        taskItemLabels[selectedLabel].config(relief="raised") 
+        deleteTask.config(bg="red")
+
+    elif selectedLabel == num: # if same label is clicked twice, unselect label
+        if taskItemLabels[selectedLabel]['relief'] == "raised":
+            taskItemLabels[selectedLabel].config(relief="flat") 
+            deleteTask.config(bg="gray")
         else:
-            previousClicked.config(relief="flat") 
-            event.widget.config(relief="raised") 
-            previousClicked = event.widget
+            taskItemLabels[selectedLabel].config(relief="raised") 
+            deleteTask.config(bg="red")
+
+    else: # if different label is clicked and previous is selected
+        taskItemLabels[selectedLabel].config(relief="flat") 
+        taskItemLabels[num].config(relief="raised")
+        selectedLabel = num
+        deleteTask.config(bg="red")
+        
 
 def bind_task_item(task, num, command):
 
@@ -196,7 +195,7 @@ def bind_task_item(task, num, command):
     # task.bind('<Leave>', lambda _: task.config(text="thanks"))
 
     # Clicking labels
-    task.bind("<Button-1>", lambda e: label_clicked(e, taskItems[num][0]))
+    task.bind("<Button-1>", lambda e: label_clicked(e, taskItems[num][0], num))
     task.pack(pady=5)  
 
 def destroy_task_labels():
@@ -204,19 +203,15 @@ def destroy_task_labels():
        taskItemLabels[i].destroy()
 
 def display_task_list():
-    global isVisible 
     global message_frame, message_label
 
     if len(taskItems) == 0:
-        isVisible = True
         message_frame.pack(anchor="nw", padx=20, pady=40) 
         message_label.pack(anchor="nw")
 
     else:
-        if isVisible == True:
-            message_frame.pack_forget()
-            message_label.pack_forget()
-        isVisible = False
+        message_frame.pack_forget()
+        message_label.pack_forget()
         task_list_items()
 
 def task_list_items():
@@ -241,18 +236,10 @@ def task_list_items():
     pie_chart()
     summary_data()
 
-
 def close_pop_up(event):
     global ontop
     ontop = False
     pop_up.destroy()
-
-def add_new_task(event, newTask, newTaskStatus):
-    global pop_up, ontop
-    taskItems.append([newTask, newTaskStatus])
-    display_task_list()
-    pop_up.destroy()
-    ontop = False
 
 def check_pop_window(event):
     global ontop
@@ -260,7 +247,6 @@ def check_pop_window(event):
         ontop = True
         pop_up_window(event)
     
-
 def pop_up_window(event):
     global pop_up
     pop_up = tk.Toplevel(bg="black")
@@ -299,7 +285,24 @@ def pop_up_window(event):
 
     pop_up.mainloop()
 
+# ---- TASK ACTION FUNCTIONS ---- 
+def add_new_task(event, newTask, newTaskStatus):
+    global pop_up, ontop
+    taskItems.append([newTask, newTaskStatus])
+    display_task_list()
+    pop_up.destroy()
+    ontop = False
+
+def delete_task_item_label(event):
+    global selectedLabel
+    if selectedLabel != -1 and deleteTask['bg'] != "gray":
+        print("DELETING")
+        taskItemLabels[selectedLabel].destroy()
+        selectedLabel = -1
+        deleteTask.config(bg="gray")
+
 def task_list_actions():
+    global deleteTask
     # Add a New Task
     addNewTask = tk.Button(window, text="Add New Task", fg="white", bg="#0066FF")
     addNewTask.pack(anchor="s")
@@ -307,6 +310,10 @@ def task_list_actions():
     addNewTask.bind("<Button-1>", lambda event: check_pop_window(event))
 
     # Remove a Task
+    deleteTask.update_idletasks()
+    deleteTask.bind("<Button-1>", lambda event: delete_task_item_label(event))
+    
+
 
     # Edit a Task
 
