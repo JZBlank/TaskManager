@@ -296,10 +296,10 @@ def add_new_task(event, newTask, newTaskStatus):
 def delete_task_item_label(event):
     global selectedLabel
     if selectedLabel != -1 and deleteTask['bg'] != "gray":
-        print("DELETING")
         taskItemLabels[selectedLabel].destroy()
         selectedLabel = -1
         deleteTask.config(bg="gray")
+        taskItems.remove(taskItems[selectedLabel])
 
 def task_list_actions():
     global deleteTask
