@@ -73,7 +73,7 @@ tasklist_canvas.configure(yscrollcommand=scrollbar.set)
 tasklist_canvas.config(background="black")
 
 pop_up = tk.Frame(bg="red")
-deleteTask = tk.Button(window, text="Delete Task", fg="white", bg="gray")
+deleteTask = tk.Button(window, text="Delete Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white")
 deleteTask.place(x=150, y=450)
 
 
@@ -87,9 +87,12 @@ def update_time():
 def angle(n):
     return n
 
-def calculations():
-    global done, incomplete, inProcess, none
-    totalTasks = len(taskItems)
+def update_status():
+    global done, incomplete, inProcess
+    done = 0 
+    incomplete = 0
+    inProcess = 0
+    
     for item, status in taskItems:
         if status == "Done":
             done += 1
@@ -97,6 +100,11 @@ def calculations():
             incomplete += 1
         elif status == "InProcess":
             inProcess += 1
+
+def calculations():
+    global done, incomplete, inProcess
+    totalTasks = len(taskItems)
+    update_status()
 
     return [(done/totalTasks)*360, (incomplete/totalTasks)*360, (inProcess/totalTasks)*360]
 
@@ -106,9 +114,8 @@ def pie_chart():
     canvas.pack(anchor="ne")
     canvas.place(x=490, y=30)
 
-    #pie_chart_legend(canvas)
-
     if len(taskItems) == 0:
+        update_status()
         canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(359))
     else:
         degrees = calculations()
@@ -168,21 +175,21 @@ def label_clicked(event, text, num):
     if selectedLabel == -1:
         selectedLabel = num 
         taskItemLabels[selectedLabel].config(relief="raised") 
-        deleteTask.config(bg="red")
+        deleteTask.config(bg="red", activebackground="red", activeforeground="white")
 
     elif selectedLabel == num: # if same label is clicked twice, unselect label
         if taskItemLabels[selectedLabel]['relief'] == "raised":
             taskItemLabels[selectedLabel].config(relief="flat") 
-            deleteTask.config(bg="gray")
+            deleteTask.config(bg="gray", activebackground="gray", activeforeground="white")
         else:
             taskItemLabels[selectedLabel].config(relief="raised") 
-            deleteTask.config(bg="red")
+            deleteTask.config(bg="red", activebackground="red", activeforeground="white")
 
     else: # if different label is clicked and previous is selected
         taskItemLabels[selectedLabel].config(relief="flat") 
         taskItemLabels[num].config(relief="raised")
         selectedLabel = num
-        deleteTask.config(bg="red")
+        deleteTask.config(bg="red", activebackground="red", activeforeground="white")
         
 
 def bind_task_item(task, num, command):
@@ -298,13 +305,15 @@ def delete_task_item_label(event):
     if selectedLabel != -1 and deleteTask['bg'] != "gray":
         taskItemLabels[selectedLabel].destroy()
         selectedLabel = -1
-        deleteTask.config(bg="gray")
+        deleteTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
         taskItems.remove(taskItems[selectedLabel])
+        pie_chart()
+        summary_data()
 
 def task_list_actions():
     global deleteTask
     # Add a New Task
-    addNewTask = tk.Button(window, text="Add New Task", fg="white", bg="#0066FF")
+    addNewTask = tk.Button(window, text="Add New Task", fg="white", bg="#0066FF", activebackground="blue", activeforeground="white")
     addNewTask.pack(anchor="s")
     addNewTask.place(x=20, y=450)
     addNewTask.bind("<Button-1>", lambda event: check_pop_window(event))
