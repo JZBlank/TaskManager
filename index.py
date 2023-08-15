@@ -271,42 +271,55 @@ def pop_up_window(event):
     pop_up_y = screen_height + 40
 
     pop_up.geometry("600x400")
-
     pop_up.geometry(f'+{pop_up_x}+{pop_up_y}')
 
     task_name = tk.Label(pop_up, text= "Task Name",
     fg = "white",
     bg = "black",
     font=('Calibri 10 bold'))
-    task_name.pack(anchor="n", side="left", padx=(10,300), pady=20)
+    task_name.pack()
+    task_name.place(x=10, y=15)
 
     task_status = tk.Label(pop_up, text= "Status",
     fg = "white",
     bg = "black",
     font=('Calibri 10 bold'))
-    task_status.pack(anchor="n", side="left", padx=10, pady=20)
+    task_status.pack()
+    task_status.place(x=420, y=15)
 
-    newTask = tk.Entry(pop_up)
+    newTask = tk.Entry(pop_up, width=40)
     newTask.pack()
+    newTask.place(x=10, y=35)
 
     option_values = ["Incomplete", "InProcess", "Done"]
     option_var = tk.StringVar(value=option_values[0])
 
     status_values = tk.OptionMenu(pop_up, option_var, *option_values )
-    status_values.pack(pady=5)
+    status_values.pack()
+    status_values.place(x=420, y=35)
 
-    tk.Label(pop_up, text= "Task Description:", fg="white", bg="black", width=20, height=1, highlightthickness=0, borderwidth=4, anchor="nw").pack(pady= (30, 2))
-    newTask = tk.Entry(pop_up)
-    newTask.pack(pady=5)
+    task_description = tk.Label(pop_up, text= "Task Description",
+    fg = "white",
+    bg = "black",
+    font=('Calibri 10 bold'))
+    task_description.pack()
+    task_description.place(x=10, y=95)   
+
+    task_descr_text = tk.Text(pop_up, width=70, height=10)
+    task_descr_text.pack()
+    task_descr_text.place(x=10, y=120)
 
     # NEW TASK BUTTONS
-    addNewTaskButton = tk.Button(pop_up, text="Add", fg="white", bg="#0066FF")
-    addNewTaskButton.pack(pady= (30, 10))
+    addNewTaskButton = tk.Button(pop_up, text="Add Task", fg="white", bg="#0066FF", activebackground="blue", activeforeground="white")
+    addNewTaskButton.pack()
+    addNewTaskButton.place(x=485, y=350)  
     
     addNewTaskButton.bind("<Button-1>", lambda event: add_new_task(event, newTask.get(), option_var.get()))
 
-    cancelNewTask = tk.Button(pop_up, text="Cancel", fg="white", bg="#0066FF")
-    cancelNewTask.pack(pady=10)    
+    cancelNewTask = tk.Button(pop_up, text="Cancel", fg="white", bg="darkgray", activebackground="gray", activeforeground="white")
+    cancelNewTask.pack()   
+    cancelNewTask.place(x=400, y=350)    
+
     cancelNewTask.bind("<Button-1>", lambda event: close_pop_up(event))
 
     pop_up.protocol("WM_DELETE_WINDOW", disable_event)
