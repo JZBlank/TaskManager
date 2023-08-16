@@ -256,7 +256,9 @@ def task_list_items():
     tasklist_frame.pack(side="left",anchor="nw", padx=20, pady=40) # Modify 'pady' to change spacing for tasklist list
     tasklist_canvas.pack(side="left",anchor="nw", fill="both", expand=True)
 
-    scrollbar.pack(side="right", fill="both")
+    # Only display scrollbar if height exceeds certain num (220)
+    if scrollable_frame.winfo_height() > 220:
+        scrollbar.pack(side="right", fill="both")
 
     pie_chart()
     summary_data()
@@ -349,21 +351,17 @@ def pop_up_window(event, title, color, action):
     task_descr_text.place(x=10, y=120)
 
     # NEW TASK BUTTONS
-
     actionButton = tk.Button(pop_up, text=action, fg="white", bg="#0066FF", activebackground= "blue", activeforeground="white", highlightthickness=0)
     actionButton.pack()
     actionButton.place(x=485, y=350)  
-    
     actionButton.bind("<Button-1>", lambda event: choose_action(event, action, newTask.get(), option_var.get()))
 
     cancelNewTask = tk.Button(pop_up, text="Cancel", fg="white", bg="darkgray", activebackground="gray", activeforeground="white", highlightthickness=0)
     cancelNewTask.pack()   
     cancelNewTask.place(x=400, y=350)    
-
     cancelNewTask.bind("<Button-1>", lambda event: close_pop_up(event))
 
     pop_up.protocol("WM_DELETE_WINDOW", disable_event)
-
     pop_up.mainloop()
 
 # ---- TASK ACTION FUNCTIONS ---- 
