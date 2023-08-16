@@ -73,10 +73,10 @@ tasklist_canvas.configure(yscrollcommand=scrollbar.set)
 tasklist_canvas.config(background="black")
 
 pop_up = tk.Frame(bg="red")
-deleteTask = tk.Button(window, text="Delete Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white")
+deleteTask = tk.Button(window, text="Delete Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white", highlightthickness=0)
 deleteTask.place(x=250, y=450)
 
-editTask = tk.Button(window, text="Edit Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white")
+editTask = tk.Button(window, text="Edit Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white", highlightthickness=0)
 editTask.pack(anchor="s")
 editTask.place(x=150, y=450)
 
@@ -177,30 +177,36 @@ selectedLabel = -1 # Item in TaskList that is clicked (-1 means unselected)
 
 def label_clicked(event, text, num):
     global selectedLabel, deleteTask
+
+    deleteTaskColor = "red"
+    editTaskColor = "orange"
+    defaultColor = "gray"
+
+
     if selectedLabel == -1:
         selectedLabel = num 
         taskItemLabels[selectedLabel].config(relief="raised") 
-        deleteTask.config(bg="red", activebackground="red", activeforeground="white")
-        editTask.config(bg="orange", activebackground="darkorange", activeforeground="white")
+        deleteTask.config(bg=deleteTaskColor, activebackground="#D6001C", activeforeground="white")
+        editTask.config(bg=editTaskColor, activebackground="dark" + editTaskColor, activeforeground="white")
 
     elif selectedLabel == num: # if same label is clicked twice, unselect label
         if taskItemLabels[selectedLabel]['relief'] == "raised":
             taskItemLabels[selectedLabel].config(relief="flat") 
-            deleteTask.config(bg="gray", activebackground="gray", activeforeground="white")
-            editTask.config(bg="gray", activebackground="gray", activeforeground="white")
+            deleteTask.config(bg=defaultColor, activebackground=defaultColor, activeforeground="white")
+            editTask.config(bg=defaultColor, activebackground=defaultColor, activeforeground="white")
 
         else:
             taskItemLabels[selectedLabel].config(relief="raised") 
-            deleteTask.config(bg="red", activebackground="red", activeforeground="white")
-            editTask.config(bg="orange", activebackground="darkorange", activeforeground="white")
+            deleteTask.config(bg=deleteTaskColor, activebackground="dark" + deleteTaskColor, activeforeground="white")
+            editTask.config(bg=editTaskColor, activebackground="dark" + editTaskColor, activeforeground="white")
 
 
     else: # if different label is clicked and previous is selected
         taskItemLabels[selectedLabel].config(relief="flat") 
         taskItemLabels[num].config(relief="raised")
         selectedLabel = num
-        deleteTask.config(bg="red", activebackground="red", activeforeground="white")
-        editTask.config(bg="orange", activebackground="darkorange", activeforeground="white")
+        deleteTask.config(bg=deleteTaskColor, activebackground="dark" + deleteTaskColor, activeforeground="white")
+        editTask.config(bg=editTaskColor, activebackground="dark" + editTaskColor, activeforeground="white")
 
         
 
@@ -260,15 +266,15 @@ def close_pop_up(event):
     ontop = False
     pop_up.destroy()
 
-def check_pop_window(event, title, action):
+def check_pop_window(event, title, color, action):
     global ontop, editTask
     if ontop == False:
         if action == "Add Task":
             ontop = True
-            pop_up_window(event, title, action)
+            pop_up_window(event, title, color, action)
         elif action == "Edit Task" and editTask['bg'] != "darkgray":
             ontop = True
-            pop_up_window(event, title, action)
+            pop_up_window(event, title, color, action)
 
 def disable_event():
     pass
@@ -276,7 +282,7 @@ def disable_event():
 def option_menu_update(event, status_values, option_values_with_status, chosen_status):
     status_values.config(highlightthickness=0, fg="white", bg=option_values_with_status[chosen_status], activebackground=option_values_with_status[chosen_status], activeforeground="white")
 
-def pop_up_window(event, title, action):
+def pop_up_window(event, title, color, action):
     global pop_up, status_values
     pop_up = tk.Toplevel(bg="black")
 
@@ -343,13 +349,14 @@ def pop_up_window(event, title, action):
     task_descr_text.place(x=10, y=120)
 
     # NEW TASK BUTTONS
-    actionButton = tk.Button(pop_up, text=action, fg="white", bg="#0066FF", activebackground="blue", activeforeground="white")
+
+    actionButton = tk.Button(pop_up, text=action, fg="white", bg="#0066FF", activebackground= "blue", activeforeground="white", highlightthickness=0)
     actionButton.pack()
     actionButton.place(x=485, y=350)  
     
     actionButton.bind("<Button-1>", lambda event: choose_action(event, action, newTask.get(), option_var.get()))
 
-    cancelNewTask = tk.Button(pop_up, text="Cancel", fg="white", bg="darkgray", activebackground="gray", activeforeground="white")
+    cancelNewTask = tk.Button(pop_up, text="Cancel", fg="white", bg="darkgray", activebackground="gray", activeforeground="white", highlightthickness=0)
     cancelNewTask.pack()   
     cancelNewTask.place(x=400, y=350)    
 
@@ -384,11 +391,19 @@ def delete_task_item_label(event):
         pie_chart()
         summary_data()
 
-def edit_task_item_label(event):
+def edit_task_item_label(event, taskText, optionVal):
+    global pop_up, ontop
     if selectedLabel != -1 and editTask['bg'] != "gray":
         editTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
-        pop_up_window(event, "Edit Task", "Edit Task")
+        pop_up.destroy()
+        ontop = False
 
+        # Modify Edited Text
+        taskItems[selectedLabel][0] = taskText
+        taskItems[selectedLabel][1] = optionVal
+
+        # Update Data Displayed
+        display_task_list()
         pie_chart()
         summary_data()
 
@@ -396,17 +411,17 @@ def task_list_actions():
     global deleteTask
     global editTask
     # Add a New Task
-    addNewTask = tk.Button(window, text="Add New Task", fg="white", bg="#0066FF", activebackground="blue", activeforeground="white")
+    addNewTask = tk.Button(window, text="Add New Task", fg="white", bg="#0066FF", activebackground="blue", activeforeground="white", highlightthickness=0)
     addNewTask.pack(anchor="s")
     addNewTask.place(x=20, y=450)
-    addNewTask.bind("<Button-1>", lambda event: check_pop_window(event, "Add New Task", "Add Task"))
+    addNewTask.bind("<Button-1>", lambda event: check_pop_window(event, "Add New Task", "#0066FF", "Add Task"))
 
     # Remove a Task
     deleteTask.update_idletasks()
     deleteTask.bind("<Button-1>", lambda event: delete_task_item_label(event))
 
     # Edit a Task
-    editTask.bind("<Button-1>", lambda event: check_pop_window(event, "Edit Task", "Edit Task"))
+    editTask.bind("<Button-1>", lambda event: check_pop_window(event, "Edit Task", "orange", "Edit Task"))
 
 
 
