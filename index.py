@@ -45,7 +45,7 @@ font=('Calibri 15 bold'))
 label.pack(pady=5, padx=20, anchor="w")
 
 # FRAME FOR TODAY 
-frame = tk.Frame(window, height=20, width=400, bg="blue")
+frame = tk.Frame(window, height=20, width=393, bg="blue")
 frame.place(x=20, y=90)
 label2 = tk.Label(frame, text="Today", bg="blue", fg="white").pack(anchor="w", pady=5, padx=20)
 frame.pack_propagate(0)
@@ -249,7 +249,7 @@ def task_list_items():
     done = 0
 
     for i in range(0, len(taskItems)):
-        item = tk.Label(scrollable_frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=140, height=2, highlightthickness=0, borderwidth=4, anchor="nw")
+        item = tk.Label(scrollable_frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=48, height=2, highlightthickness=0, borderwidth=4, anchor="nw")
         taskItemLabels.append(item)
         bind_task_item(item, i, lambda e: item.config(text= 'Works')) 
     
