@@ -74,8 +74,13 @@ tasklist_canvas.config(background="black")
 
 pop_up = tk.Frame(bg="red")
 deleteTask = tk.Button(window, text="Delete Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white")
-deleteTask.place(x=150, y=450)
+deleteTask.place(x=250, y=450)
 
+editTask = tk.Button(window, text="Edit Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white")
+editTask.pack(anchor="s")
+editTask.place(x=150, y=450)
+
+status_values = tk.OptionMenu(pop_up, None, None)
 
 # -------------------------------------------
 def update_time():
@@ -176,20 +181,27 @@ def label_clicked(event, text, num):
         selectedLabel = num 
         taskItemLabels[selectedLabel].config(relief="raised") 
         deleteTask.config(bg="red", activebackground="red", activeforeground="white")
+        editTask.config(bg="orange", activebackground="darkorange", activeforeground="white")
 
     elif selectedLabel == num: # if same label is clicked twice, unselect label
         if taskItemLabels[selectedLabel]['relief'] == "raised":
             taskItemLabels[selectedLabel].config(relief="flat") 
             deleteTask.config(bg="gray", activebackground="gray", activeforeground="white")
+            editTask.config(bg="gray", activebackground="gray", activeforeground="white")
+
         else:
             taskItemLabels[selectedLabel].config(relief="raised") 
             deleteTask.config(bg="red", activebackground="red", activeforeground="white")
+            editTask.config(bg="orange", activebackground="darkorange", activeforeground="white")
+
 
     else: # if different label is clicked and previous is selected
         taskItemLabels[selectedLabel].config(relief="flat") 
         taskItemLabels[num].config(relief="raised")
         selectedLabel = num
         deleteTask.config(bg="red", activebackground="red", activeforeground="white")
+        editTask.config(bg="orange", activebackground="darkorange", activeforeground="white")
+
         
 
 def bind_task_item(task, num, command):
@@ -248,20 +260,27 @@ def close_pop_up(event):
     ontop = False
     pop_up.destroy()
 
-def check_pop_window(event):
-    global ontop
+def check_pop_window(event, title, action):
+    global ontop, editTask
     if ontop == False:
-        ontop = True
-        pop_up_window(event)
-    
+        if action == "Add Task":
+            ontop = True
+            pop_up_window(event, title, action)
+        elif action == "Edit Task" and editTask['bg'] != "darkgray":
+            ontop = True
+            pop_up_window(event, title, action)
+
 def disable_event():
     pass
 
-def pop_up_window(event):
-    global pop_up
+def option_menu_update(event, status_values, option_values_with_status, chosen_status):
+    status_values.config(highlightthickness=0, fg="white", bg=option_values_with_status[chosen_status], activebackground=option_values_with_status[chosen_status], activeforeground="white")
+
+def pop_up_window(event, title, action):
+    global pop_up, status_values
     pop_up = tk.Toplevel(bg="black")
 
-    pop_up.title(" Add New Task ")
+    pop_up.title(title)
 
     # center pop_up window
     screen_width = window.winfo_rootx()
@@ -289,12 +308,26 @@ def pop_up_window(event):
 
     newTask = tk.Entry(pop_up, width=40)
     newTask.pack()
-    newTask.place(x=10, y=35)
+    newTask.place(x=10, y=40)
 
-    option_values = ["Incomplete", "InProcess", "Done"]
-    option_var = tk.StringVar(value=option_values[0])
+    option_values = ["Incomplete", "InProcess","Done"]
+    option_values_with_status = {"Incomplete":"Red", "InProcess": "Orange", "Done":"Green"}
 
-    status_values = tk.OptionMenu(pop_up, option_var, *option_values )
+    option_var = tk.StringVar()
+    chosen_color = ""
+
+    if action == "Edit Task":
+        newTask.insert(0, str(taskItems[selectedLabel][0]))
+        for key, val in option_values_with_status.items():
+            if key == str(taskItems[selectedLabel][1]):
+                option_var = tk.StringVar(value=key)
+                chosen_color = val
+    else:
+        option_var = tk.StringVar(value=option_values[0])
+        chosen_color = option_values_with_status[option_values[0]]
+
+    status_values = tk.OptionMenu(pop_up, option_var, *option_values, command= lambda event: option_menu_update(event, status_values, option_values_with_status, option_var.get()))
+    status_values.config(highlightthickness=0, fg="white", bg=chosen_color, activebackground=chosen_color, activeforeground="white")
     status_values.pack()
     status_values.place(x=420, y=35)
 
@@ -310,11 +343,11 @@ def pop_up_window(event):
     task_descr_text.place(x=10, y=120)
 
     # NEW TASK BUTTONS
-    addNewTaskButton = tk.Button(pop_up, text="Add Task", fg="white", bg="#0066FF", activebackground="blue", activeforeground="white")
-    addNewTaskButton.pack()
-    addNewTaskButton.place(x=485, y=350)  
+    actionButton = tk.Button(pop_up, text=action, fg="white", bg="#0066FF", activebackground="blue", activeforeground="white")
+    actionButton.pack()
+    actionButton.place(x=485, y=350)  
     
-    addNewTaskButton.bind("<Button-1>", lambda event: add_new_task(event, newTask.get(), option_var.get()))
+    actionButton.bind("<Button-1>", lambda event: choose_action(event, action, newTask.get(), option_var.get()))
 
     cancelNewTask = tk.Button(pop_up, text="Cancel", fg="white", bg="darkgray", activebackground="gray", activeforeground="white")
     cancelNewTask.pack()   
@@ -327,6 +360,12 @@ def pop_up_window(event):
     pop_up.mainloop()
 
 # ---- TASK ACTION FUNCTIONS ---- 
+def choose_action(event, action, taskText, optionVal):
+    if action == "Add Task":
+        add_new_task(event, taskText, optionVal)
+    elif action == "Edit Task":
+        edit_task_item_label(event, taskText, optionVal)
+
 def add_new_task(event, newTask, newTaskStatus):
     global pop_up, ontop
     taskItems.append([newTask, newTaskStatus])
@@ -340,25 +379,36 @@ def delete_task_item_label(event):
         taskItemLabels[selectedLabel].destroy()
         selectedLabel = -1
         deleteTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
+        editTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
         taskItems.remove(taskItems[selectedLabel])
+        pie_chart()
+        summary_data()
+
+def edit_task_item_label(event):
+    if selectedLabel != -1 and editTask['bg'] != "gray":
+        editTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
+        pop_up_window(event, "Edit Task", "Edit Task")
+
         pie_chart()
         summary_data()
 
 def task_list_actions():
     global deleteTask
+    global editTask
     # Add a New Task
     addNewTask = tk.Button(window, text="Add New Task", fg="white", bg="#0066FF", activebackground="blue", activeforeground="white")
     addNewTask.pack(anchor="s")
     addNewTask.place(x=20, y=450)
-    addNewTask.bind("<Button-1>", lambda event: check_pop_window(event))
+    addNewTask.bind("<Button-1>", lambda event: check_pop_window(event, "Add New Task", "Add Task"))
 
     # Remove a Task
     deleteTask.update_idletasks()
     deleteTask.bind("<Button-1>", lambda event: delete_task_item_label(event))
-    
-
 
     # Edit a Task
+    editTask.bind("<Button-1>", lambda event: check_pop_window(event, "Edit Task", "Edit Task"))
+
+
 
 
 # ------------------------------------------- FUNCTION CALLS -------------------------------------------
