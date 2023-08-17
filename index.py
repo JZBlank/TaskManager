@@ -54,8 +54,9 @@ frame.pack_propagate(0)
 # taskItems = [["Walk the dog", "Done"], ["Go to School", "Incomplete"], ["Do Homework", "Done"], ["Test", "InProcess"], ["Code", "InProcess"],["Go shopping", "Done"], ["Buy Food", "Done"]]
 # taskItems.sort(key=lambda x: x[1])
 
-taskItems = []
+taskItems = {}
 taskItemLabels = []
+totalTasks = 0
 
 message_frame = tk.Frame(window, height=60, width=400, bg="black")
 message_label = tk.Label(message_frame, text= "No Current Tasks", bg="black", fg="white", width=45, height=2, anchor="nw")
@@ -93,27 +94,29 @@ def angle(n):
     return n
 
 def update_status():
-    global done, incomplete, inProcess
+    global done, incomplete, inProcess, taskItems
     done = 0 
     incomplete = 0
     inProcess = 0
-    
-    for item, status in taskItems:
-        if status == "Done":
+
+    for key, val in taskItems.items():
+        if val[1] == 'Done':
             done += 1
-        elif status == "Incomplete":
+        elif val[1] == 'Incomplete':
             incomplete += 1
-        elif status == "InProcess":
+        elif val[1] == 'InProcess':
             inProcess += 1
 
 def calculations():
-    global done, incomplete, inProcess
+    global done, incomplete, inProcess, totalTasks
     totalTasks = len(taskItems)
     update_status()
 
     return [(done/totalTasks)*360, (incomplete/totalTasks)*360, (inProcess/totalTasks)*360]
 
 def pie_chart():
+    global totalTasks
+
     tk.Label(frame, text="Pie Chart").pack()
     canvas = tk.Canvas(window, width=200, height=150, bg="black", highlightthickness=0)
     canvas.pack(anchor="ne")
@@ -182,7 +185,6 @@ def label_clicked(event, text, num):
     editTaskColor = "orange"
     defaultColor = "gray"
 
-
     if selectedLabel == -1:
         selectedLabel = num 
         taskItemLabels[selectedLabel].config(relief="raised") 
@@ -242,7 +244,7 @@ def display_task_list():
 def task_list_items():
     global taskItemLabels, inProcess, incomplete, done
     destroy_task_labels()
-    taskItems.sort(key=lambda x: x[1])
+    #taskItems.sort(key=lambda x: x[1])
     taskItemLabels = []
     inProcess = 0
     incomplete = 0
@@ -372,20 +374,25 @@ def choose_action(event, action, taskText, optionVal):
         edit_task_item_label(event, taskText, optionVal)
 
 def add_new_task(event, newTask, newTaskStatus):
-    global pop_up, ontop
-    taskItems.append([newTask, newTaskStatus])
-    display_task_list()
+    global totalTasks, pop_up, ontop
+    
+    taskItems[totalTasks] = [newTask, newTaskStatus]
+    totalTasks += 1
     pop_up.destroy()
     ontop = False
 
+    display_task_list()
+
 def delete_task_item_label(event):
     global selectedLabel
+
     if selectedLabel != -1 and deleteTask['bg'] != "gray":
+        taskItems.pop(selectedLabel)
         taskItemLabels[selectedLabel].destroy()
         selectedLabel = -1
         deleteTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
         editTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
-        taskItems.remove(taskItems[selectedLabel])
+
         pie_chart()
         summary_data()
 
