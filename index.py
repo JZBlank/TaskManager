@@ -50,10 +50,7 @@ frame.place(x=20, y=90)
 label2 = tk.Label(frame, text="Today", bg="blue", fg="white").pack(anchor="w", pady=5, padx=20)
 frame.pack_propagate(0)
 
-# Task Items (Matrix)
-# taskItems = [["Walk the dog", "Done"], ["Go to School", "Incomplete"], ["Do Homework", "Done"], ["Test", "InProcess"], ["Code", "InProcess"],["Go shopping", "Done"], ["Buy Food", "Done"]]
-# taskItems.sort(key=lambda x: x[1])
-
+# TASK ITEMS
 taskItems = {}
 taskItemLabels = []
 totalTasks = 0
@@ -241,16 +238,43 @@ def display_task_list():
         message_label.pack_forget()
         task_list_items()
 
+def sort_taskItemDict():
+    global taskItems
+    sortedTasks = []
+
+    # SORT DICTIONARY 
+    for key, val in taskItems.items():
+        sortedTasks.append([key, val[0], val[1]])
+        sortedTasks.sort(key=lambda x: x[2], reverse=True)
+
+    modifiedDict = {}
+
+    for info in sortedTasks:
+        modifiedDict[info[0]] = [info[1], info[2]]
+
+    # COPY SORTED DICTIONARY TO ORIGINAL UNSORTED DICTIONARY
+    taskItems = modifiedDict
+    modifiedDict = {}
+
+    count = 0
+    for key, val in taskItems.items():
+        modifiedDict[count] = val
+        count += 1
+
+    taskItems = modifiedDict
+
 def task_list_items():
-    global taskItemLabels, inProcess, incomplete, done
+    global taskItemLabels, inProcess, incomplete, done, taskItems
+
     destroy_task_labels()
-    #taskItems.sort(key=lambda x: x[1])
+    sort_taskItemDict()
+
     taskItemLabels = []
     inProcess = 0
     incomplete = 0
     done = 0
 
-    for i in range(0, len(taskItems)):
+    for i in range(len(taskItems)):
         item = tk.Label(scrollable_frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=48, height=2, highlightthickness=0, borderwidth=4, anchor="nw")
         taskItemLabels.append(item)
         bind_task_item(item, i, lambda e: item.config(text= 'Works')) 
