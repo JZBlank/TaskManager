@@ -6,6 +6,8 @@ from tkinter import messagebox
 from datetime import date
 import time
 
+import data
+
 # Variables 
 done = 0
 incomplete = 0
@@ -81,6 +83,10 @@ editTask.place(x=150, y=450)
 status_values = tk.OptionMenu(pop_up, None, None)
 
 # -------------------------------------------
+
+def create_dict_from_data(task):
+    global taskItems
+
 def update_time():
     currentTime = time.localtime()
     timeNow = time.strftime("%-I:%M %p %Z ", currentTime)
@@ -106,7 +112,6 @@ def update_status():
 
 def calculations():
     global done, incomplete, inProcess, totalTasks
-    totalTasks = len(taskItems)
     update_status()
 
     return [(done/totalTasks)*360, (incomplete/totalTasks)*360, (inProcess/totalTasks)*360]
@@ -119,7 +124,7 @@ def pie_chart():
     canvas.pack(anchor="ne")
     canvas.place(x=490, y=30)
 
-    if len(taskItems) == 0:
+    if totalTasks == 0:
         update_status()
         canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(359))
     else:
@@ -206,7 +211,6 @@ def label_clicked(event, text, num):
         selectedLabel = num
         deleteTask.config(bg=deleteTaskColor, activebackground="dark" + deleteTaskColor, activeforeground="white")
         editTask.config(bg=editTaskColor, activebackground="dark" + editTaskColor, activeforeground="white")
-
         
 
 def bind_task_item(task, num, command):
@@ -229,9 +233,11 @@ def destroy_task_labels():
 def display_task_list():
     global message_frame, message_label
 
-    if len(taskItems) == 0:
+    if totalTasks == 0:
         message_frame.pack(anchor="nw", padx=20, pady=40) 
         message_label.pack(anchor="nw")
+        # message_frame.place(x=10, y=100)
+        # message_label.place(x=10, y=140)
 
     else:
         message_frame.pack_forget()
@@ -400,23 +406,33 @@ def choose_action(event, action, taskText, optionVal):
 def add_new_task(event, newTask, newTaskStatus):
     global totalTasks, pop_up, ontop
     
+    data.add_task(str(totalTasks) + " " + newTask + ", " + newTaskStatus) # Add data to txt file
+
     taskItems[totalTasks] = [newTask, newTaskStatus]
     totalTasks += 1
+
     pop_up.destroy()
     ontop = False
 
     display_task_list()
+    
 
 def delete_task_item_label(event):
-    global selectedLabel
+    global selectedLabel, totalTasks
 
     if selectedLabel != -1 and deleteTask['bg'] != "gray":
+
+        data.delete_task(selectedLabel)
         taskItems.pop(selectedLabel)
         taskItemLabels[selectedLabel].destroy()
+
         selectedLabel = -1
+        totalTasks -= 1
+
         deleteTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
         editTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
 
+        display_task_list()
         pie_chart()
         summary_data()
 
@@ -430,6 +446,9 @@ def edit_task_item_label(event, taskText, optionVal):
         # Modify Edited Text
         taskItems[selectedLabel][0] = taskText
         taskItems[selectedLabel][1] = optionVal
+
+        # Modify Text in Txt File
+        data.edit_task(str(selectedLabel), taskText, optionVal)
 
         # Update Data Displayed
         display_task_list()
