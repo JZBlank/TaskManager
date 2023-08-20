@@ -1,7 +1,11 @@
 import os
+
 name = "data.txt"
 name2 = "updated_data.txt"
-total = 0
+
+taskItems = {}
+totalTasks = 0
+
 
 def add_task(task):
     try:
@@ -37,7 +41,7 @@ def edit_task(selectedLabel, task, status):
                     if str(selectedLabel) not in line.strip("\n"):
                         new_data.write(line)
                     else:
-                        new_data.write(str(selectedLabel) + " " + task + ", " + status + "\n")
+                        new_data.write(str(selectedLabel) + "," + task + "," + status + "\n")
     except:
         print('Error')
 
@@ -46,10 +50,18 @@ def edit_task(selectedLabel, task, status):
     original_data = new_data
     new_data.close()
 
-# def total_tasks():
-#     global total
-#     with open(name, "r") as original_data:
-#         for line in original_data:
-#             total += 1
+def task_list():
+    with open(name) as data_file:
+        for line in data_file:
+            line_split = line.split(",")
+            if line_split:
+                taskItems[line_split[0]] = [line_split[1], line_split[2].strip("\n")]
+    
+def total_tasks():
+    global totalTasks
+    totalTasks = 0
+    for key in taskItems:
+        totalTasks += 1
 
-    # return total
+task_list()
+total_tasks()

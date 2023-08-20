@@ -53,9 +53,7 @@ label2 = tk.Label(frame, text="Today", bg="blue", fg="white").pack(anchor="w", p
 frame.pack_propagate(0)
 
 # TASK ITEMS
-taskItems = {}
 taskItemLabels = []
-totalTasks = 0
 
 message_frame = tk.Frame(window, height=60, width=400, bg="black")
 message_label = tk.Label(message_frame, text= "No Current Tasks", bg="black", fg="white", width=45, height=2, anchor="nw")
@@ -83,10 +81,6 @@ editTask.place(x=150, y=450)
 status_values = tk.OptionMenu(pop_up, None, None)
 
 # -------------------------------------------
-
-def create_dict_from_data(task):
-    global taskItems
-
 def update_time():
     currentTime = time.localtime()
     timeNow = time.strftime("%-I:%M %p %Z ", currentTime)
@@ -97,12 +91,12 @@ def angle(n):
     return n
 
 def update_status():
-    global done, incomplete, inProcess, taskItems
+    global done, incomplete, inProcess
     done = 0 
     incomplete = 0
     inProcess = 0
 
-    for key, val in taskItems.items():
+    for key, val in data.taskItems.items():
         if val[1] == 'Done':
             done += 1
         elif val[1] == 'Incomplete':
@@ -111,20 +105,18 @@ def update_status():
             inProcess += 1
 
 def calculations():
-    global done, incomplete, inProcess, totalTasks
+    global done, incomplete, inProcess
     update_status()
 
-    return [(done/totalTasks)*360, (incomplete/totalTasks)*360, (inProcess/totalTasks)*360]
+    return [(done/data.totalTasks)*360, (incomplete/data.totalTasks)*360, (inProcess/data.totalTasks)*360]
 
 def pie_chart():
-    global totalTasks
-
     tk.Label(frame, text="Pie Chart").pack()
     canvas = tk.Canvas(window, width=200, height=150, bg="black", highlightthickness=0)
     canvas.pack(anchor="ne")
     canvas.place(x=490, y=30)
 
-    if totalTasks == 0:
+    if data.totalTasks == 0:
         update_status()
         canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(359))
     else:
@@ -158,7 +150,7 @@ def summary_data():
     frame.pack_propagate(0)
     _y = 320
 
-    arr = [["Total Tasks:      ", len(taskItems)], ["Completed:       ", done], ["In Process:        ", inProcess], ["Missing:            ", incomplete]]
+    arr = [["Total Tasks:      ", len(data.taskItems)], ["Completed:       ", done], ["In Process:        ", inProcess], ["Missing:            ", incomplete]]
     for item, count in arr:
         # Create a label widget in Tkinter
         label = tk.Label(window, text = item + " " + str(count),
@@ -170,11 +162,11 @@ def summary_data():
         _y += 20
 
 def check_task_status(status):
-    if status == "Done":
+    if status == "Done" or status == "Done":
         return "green"
-    elif status == "Incomplete":
+    elif status == "Incomplete" or status == "Incomplete":
         return "red"
-    elif status == "InProcess":
+    elif status == "InProcess" or status == "InProcess" :
         return "orange"
     return "gray"
 
@@ -223,7 +215,7 @@ def bind_task_item(task, num, command):
     # task.bind('<Leave>', lambda _: task.config(text="thanks"))
 
     # Clicking labels
-    task.bind("<Button-1>", lambda e: label_clicked(e, taskItems[num][0], num))
+    task.bind("<Button-1>", lambda e: label_clicked(e, data.taskItems[num][0], num))
     task.pack(pady=5)  
 
 def destroy_task_labels():
@@ -233,7 +225,7 @@ def destroy_task_labels():
 def display_task_list():
     global message_frame, message_label
 
-    if totalTasks == 0:
+    if data.totalTasks == 0:
         message_frame.pack(anchor="nw", padx=20, pady=40) 
         message_label.pack(anchor="nw")
         # message_frame.place(x=10, y=100)
@@ -245,11 +237,10 @@ def display_task_list():
         task_list_items()
 
 def sort_taskItemDict():
-    global taskItems
     sortedTasks = []
 
     # SORT DICTIONARY 
-    for key, val in taskItems.items():
+    for key, val in data.taskItems.items():
         sortedTasks.append([key, val[0], val[1]])
         sortedTasks.sort(key=lambda x: x[2], reverse=True)
 
@@ -259,18 +250,18 @@ def sort_taskItemDict():
         modifiedDict[info[0]] = [info[1], info[2]]
 
     # COPY SORTED DICTIONARY TO ORIGINAL UNSORTED DICTIONARY
-    taskItems = modifiedDict
+    data.taskItems = modifiedDict
     modifiedDict = {}
 
     count = 0
-    for key, val in taskItems.items():
+    for key, val in data.taskItems.items():
         modifiedDict[count] = val
         count += 1
 
-    taskItems = modifiedDict
+    data.taskItems = modifiedDict
 
 def task_list_items():
-    global taskItemLabels, inProcess, incomplete, done, taskItems
+    global taskItemLabels, inProcess, incomplete, done
 
     destroy_task_labels()
     sort_taskItemDict()
@@ -280,8 +271,8 @@ def task_list_items():
     incomplete = 0
     done = 0
 
-    for i in range(len(taskItems)):
-        item = tk.Label(scrollable_frame, text= taskItems[i][0], bg=check_task_status(taskItems[i][1]), fg="white", width=48, height=2, highlightthickness=0, borderwidth=4, anchor="nw")
+    for i in range(len(data.taskItems)):
+        item = tk.Label(scrollable_frame, text= data.taskItems[i][0], bg=check_task_status(data.taskItems[i][1]), fg="white", width=48, height=2, highlightthickness=0, borderwidth=4, anchor="nw")
         taskItemLabels.append(item)
         bind_task_item(item, i, lambda e: item.config(text= 'Works')) 
     
@@ -357,9 +348,9 @@ def pop_up_window(event, title, color, action):
     chosen_color = ""
 
     if action == "Edit Task":
-        newTask.insert(0, str(taskItems[selectedLabel][0]))
+        newTask.insert(0, str(data.taskItems[selectedLabel][0]))
         for key, val in option_values_with_status.items():
-            if key == str(taskItems[selectedLabel][1]):
+            if key == str(data.taskItems[selectedLabel][1]):
                 option_var = tk.StringVar(value=key)
                 chosen_color = val
     else:
@@ -404,13 +395,13 @@ def choose_action(event, action, taskText, optionVal):
         edit_task_item_label(event, taskText, optionVal)
 
 def add_new_task(event, newTask, newTaskStatus):
-    global totalTasks, pop_up, ontop
+    global pop_up, ontop
+    print(data.taskItems)
     
-    data.add_task(str(totalTasks) + " " + newTask + ", " + newTaskStatus) # Add data to txt file
+    data.add_task(str(data.totalTasks) + "," + newTask + "," + newTaskStatus) # Add data to txt file
 
-    taskItems[totalTasks] = [newTask, newTaskStatus]
-    totalTasks += 1
-
+    data.taskItems[data.totalTasks] = [newTask, newTaskStatus]
+    data.total_tasks()
     pop_up.destroy()
     ontop = False
 
@@ -418,16 +409,16 @@ def add_new_task(event, newTask, newTaskStatus):
     
 
 def delete_task_item_label(event):
-    global selectedLabel, totalTasks
+    global selectedLabel
 
     if selectedLabel != -1 and deleteTask['bg'] != "gray":
 
         data.delete_task(selectedLabel)
-        taskItems.pop(selectedLabel)
+        data.taskItems.pop(selectedLabel)
         taskItemLabels[selectedLabel].destroy()
 
         selectedLabel = -1
-        totalTasks -= 1
+        data.totalTasks -= 1
 
         deleteTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
         editTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
@@ -444,8 +435,8 @@ def edit_task_item_label(event, taskText, optionVal):
         ontop = False
 
         # Modify Edited Text
-        taskItems[selectedLabel][0] = taskText
-        taskItems[selectedLabel][1] = optionVal
+        data.taskItems[selectedLabel][0] = taskText
+        data.taskItems[selectedLabel][1] = optionVal
 
         # Modify Text in Txt File
         data.edit_task(str(selectedLabel), taskText, optionVal)
