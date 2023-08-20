@@ -396,7 +396,6 @@ def choose_action(event, action, taskText, optionVal):
 
 def add_new_task(event, newTask, newTaskStatus):
     global pop_up, ontop
-    print(data.taskItems)
     
     data.add_task(str(data.totalTasks) + "," + newTask + "," + newTaskStatus) # Add data to txt file
 
