@@ -25,10 +25,16 @@ def delete_task(selectedLabel):
     except:
         print('Error')
 
+
     open(name, "w") # removes all text
-    os.rename(name2, name)  #rename updated file to original
-    original_data = new_data
-    new_data.close()
+
+    with open(name2, "r") as updated_data:
+        with open(name, "w") as copy: 
+            for line in updated_data:
+                copy.write(line)
+
+    open(name2, "w") # removes all text
+    
             
 def delete_all():
     open(name, "w")
