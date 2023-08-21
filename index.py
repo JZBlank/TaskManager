@@ -55,8 +55,7 @@ frame.pack_propagate(0)
 # TASK ITEMS
 taskItemLabels = []
 
-message_frame = tk.Frame(window, height=60, width=400, bg="black")
-message_label = tk.Label(message_frame, text= "No Current Tasks", bg="black", fg="white", width=45, height=2, anchor="nw")
+message_label = tk.Label(window, text= "No Current Tasks", bg="black", fg="white", width=49, height=2, anchor="nw")
 
 tasklist_frame = tk.Frame(window, height=300, width=400, bg="orange", borderwidth= 0, highlightthickness=0)
 tasklist_canvas = tk.Canvas(tasklist_frame, height=300, width=400, bg="red", borderwidth= 0, highlightthickness=0)
@@ -223,16 +222,14 @@ def destroy_task_labels():
        taskItemLabels[i].destroy()
 
 def display_task_list():
-    global message_frame, message_label
+    global message_label
 
     if data.totalTasks == 0:
-        message_frame.pack(anchor="nw", padx=20, pady=40) 
-        message_label.pack(anchor="nw")
-        # message_frame.place(x=10, y=100)
-        # message_label.place(x=10, y=140)
+        tasklist_frame.pack_forget()
+        tasklist_canvas.pack_forget()
+        message_label.place(x=20, y=120)
 
     else:
-        message_frame.pack_forget()
         message_label.pack_forget()
         task_list_items()
 

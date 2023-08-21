@@ -16,6 +16,8 @@ def add_task(task):
         print('Error')
 
 def delete_task(selectedLabel):
+    count = 0
+
     try:
         with open(name, "r") as original_data:
             with open(name2, "w") as new_data: 
@@ -28,10 +30,14 @@ def delete_task(selectedLabel):
 
     open(name, "w") # removes all text
 
-    with open(name2, "r") as updated_data:
-        with open(name, "w") as copy: 
-            for line in updated_data:
-                copy.write(line)
+    print(os.path.getsize(name2))
+    if os.path.getsize(name2) > 0:
+        with open(name2, "r") as updated_data:
+            with open(name, "w") as copy: 
+                for line in updated_data:
+                    copy.write(line)
+    else:
+        open(name, "w") 
 
     open(name2, "w") # removes all text
     
@@ -57,11 +63,12 @@ def edit_task(selectedLabel, task, status):
     new_data.close()
 
 def task_list():
-    with open(name) as data_file:
-        for line in data_file:
-            line_split = line.split(",")
-            if line_split:
-                taskItems[line_split[0]] = [line_split[1], line_split[2].strip("\n")]
+    if totalTasks > 0:
+        with open(name) as data_file:
+            for line in data_file:
+                line_split = line.split(",")
+                if line_split:
+                    taskItems[line_split[0]] = [line_split[1], line_split[2].strip("\n")]
     
 def total_tasks():
     global totalTasks
