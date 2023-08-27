@@ -30,7 +30,6 @@ def delete_task(selectedLabel):
 
     open(name, "w") # removes all text
 
-    print(os.path.getsize(name2))
     if os.path.getsize(name2) > 0:
         with open(name2, "r") as updated_data:
             with open(name, "w") as copy: 
