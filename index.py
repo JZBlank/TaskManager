@@ -79,7 +79,8 @@ editTask.place(x=150, y=450)
 
 status_values = tk.OptionMenu(pop_up, None, None)
 
-# -------------------------------------------
+# -------------------------------------------   
+
 def update_time():
     currentTime = time.localtime()
     timeNow = time.strftime("%-I:%M %p %Z ", currentTime)
@@ -202,7 +203,6 @@ def label_clicked(event, text, num):
         selectedLabel = num
         deleteTask.config(bg=deleteTaskColor, activebackground="dark" + deleteTaskColor, activeforeground="white")
         editTask.config(bg=editTaskColor, activebackground="dark" + editTaskColor, activeforeground="white")
-        
 
 def bind_task_item(task, num, command):
 
@@ -395,15 +395,13 @@ def add_new_task(event, newTask, newTaskStatus):
     global pop_up, ontop
     
     data.add_task(str(data.totalTasks) + "," + newTask + "," + newTaskStatus) # Add data to txt file
-
     data.taskItems[data.totalTasks] = [newTask, newTaskStatus]
-    data.total_tasks()
+
     pop_up.destroy()
     ontop = False
 
     display_task_list()
     
-
 def delete_task_item_label(event):
     global selectedLabel
 

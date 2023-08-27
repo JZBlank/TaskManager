@@ -6,11 +6,13 @@ name2 = "updated_data.txt"
 taskItems = {}
 totalTasks = 0
 
-
 def add_task(task):
+    global totalTasks
+
     try:
         file = open(name,'a')
         file.write(task + "\n")
+        totalTasks += 1
 
     except:
         print('Error')
@@ -34,13 +36,14 @@ def delete_task(selectedLabel):
         with open(name2, "r") as updated_data:
             with open(name, "w") as copy: 
                 for line in updated_data:
-                    copy.write(line)
+                    line_split = line.split(",")
+                    copy.write(str(count) + "," + line_split[1] + "," + line_split[2])
+                    count += 1
     else:
         open(name, "w") 
 
     open(name2, "w") # removes all text
-    
-            
+  
 def delete_all():
     open(name, "w")
 
@@ -61,19 +64,19 @@ def edit_task(selectedLabel, task, status):
     original_data = new_data
     new_data.close()
 
-def task_list():
-    if totalTasks > 0:
-        with open(name) as data_file:
-            for line in data_file:
-                line_split = line.split(",")
-                if line_split:
-                    taskItems[line_split[0]] = [line_split[1], line_split[2].strip("\n")]
-    
-def total_tasks():
-    global totalTasks
-    totalTasks = 0
-    for key in taskItems:
-        totalTasks += 1
+def check_data():
+    if os.path.getsize(name) > 0:
+        data_to_dict()
 
-task_list()
-total_tasks()
+def data_to_dict():
+    global totalTasks
+
+    data_file = open(name,'a')
+    with open(name) as data_file:
+        for line in data_file:
+            totalTasks += 1 # keep track of total tasks in txt file
+            line_split = line.split(",")
+            if line_split:
+                taskItems[line_split[0]] = [line_split[1], line_split[2]]
+
+check_data()
