@@ -19,4 +19,5 @@ TaskManager is a desktop app aimed to help organize and plan out to-do list item
 
 
 ## APP IMAGES:
+![image](https://github.com/JZBlank/TaskManager/assets/56086743/4f5cb15d-9335-46cf-aa6e-ede6306c482e)
 
