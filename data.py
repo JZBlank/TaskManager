@@ -37,7 +37,7 @@ def delete_task(selectedLabel):
             with open(name, "w") as copy: 
                 for line in updated_data:
                     line_split = line.split(",")
-                    copy.write(str(count) + "," + line_split[1] + "," + line_split[2])
+                    copy.write(str(count) + "," + line_split[1] + "," + line_split[2] + "," + line_split[3])
                     count += 1
     else:
         open(name, "w") 
@@ -47,7 +47,7 @@ def delete_task(selectedLabel):
 def delete_all():
     open(name, "w")
 
-def edit_task(selectedLabel, task, status):
+def edit_task(selectedLabel, task, description, status):
     try:
         with open(name, "r") as original_data:
             with open(name2, "w") as new_data: 
@@ -55,7 +55,7 @@ def edit_task(selectedLabel, task, status):
                     if str(selectedLabel) not in line.strip("\n"):
                         new_data.write(line)
                     else:
-                        new_data.write(str(selectedLabel) + "," + task + "," + status + "\n")
+                        new_data.write(str(selectedLabel) + "," + task + "," + description + "," + status + "\n")
     except:
         print('Error')
 
@@ -77,6 +77,6 @@ def data_to_dict():
             totalTasks += 1 # keep track of total tasks in txt file
             line_split = line.split(",")
             if line_split:
-                taskItems[line_split[0]] = [line_split[1], line_split[2].strip("\n")]
+                taskItems[line_split[0]] = [line_split[1], line_split[2], line_split[3].strip("\n")]
 
 check_data()

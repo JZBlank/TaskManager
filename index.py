@@ -82,8 +82,7 @@ status_values = tk.OptionMenu(pop_up, None, None)
 # Pie Chart Data + Summary
 pie_data = tk.Canvas(window, width=200, height=450, bg="black", highlightthickness=0)
 data_visuals = tk.Canvas(window, height=250, width=150, bg="black", highlightthickness=0)
-
-task_data = tk.Canvas(window, width=200, height=150, bg="black", highlightthickness=0)
+task_data = tk.Canvas(window, width=200, height=250, bg="black", highlightthickness=0)
 
 # -------------------------------------------   
 
@@ -103,11 +102,11 @@ def update_status():
     inProcess = 0
 
     for key, val in data.taskItems.items():
-        if val[1] == 'Done':
+        if val[2] == 'Done':
             done += 1
-        elif val[1] == 'Incomplete':
+        elif val[2] == 'Incomplete':
             incomplete += 1
-        elif val[1] == 'InProcess':
+        elif val[2] == 'InProcess':
             inProcess += 1
 
 def calculations():
@@ -222,7 +221,6 @@ def label_clicked(event, text, num):
 def task_item_pop_up(selectedLabel):
     pie_data.pack_forget()
     pie_data.place_forget()
-    
 
     task_data.pack(anchor="center")
     task_data.place(x=475, y=30)
@@ -233,8 +231,10 @@ def task_item_pop_up(selectedLabel):
     task_name = tk.Label(task_data, text="Task Name: " + data.taskItems[selectedLabel][0], font=("Arial Bold", 9), bg="black", fg="white")
     task_name.place(x=0, y=50)
 
-    task_description = tk.Label(task_data, text="Task Description: " + data.taskItems[selectedLabel][0], font=("Arial Bold", 9), bg="black", fg="white")
+    task_description = tk.Label(task_data, text="Task Description: " + data.taskItems[selectedLabel][1], font=("Arial Bold", 9), bg="black", fg="white", wraplength= 200, justify="left")
     task_description.place(x=0, y=70)
+
+    task_description.update_idletasks()
 
 # RESHOW PIE CHART DATA AND SUMMARY
 def data_visualization_pop_up():
@@ -244,7 +244,6 @@ def data_visualization_pop_up():
     # PIE CHART
     pie_data.pack(anchor="ne")
     pie_data.place(x=490, y=30)
-
 
 def bind_task_item(task, num, command):
 
@@ -280,13 +279,13 @@ def sort_taskItemDict():
 
     # SORT DICTIONARY 
     for key, val in data.taskItems.items():
-        sortedTasks.append([key, val[0], val[1]])
-        sortedTasks.sort(key=lambda x: x[2], reverse=True)
+        sortedTasks.append([key, val[0], val[1], val[2]])
+        sortedTasks.sort(key=lambda x: x[3], reverse=True)
 
     modifiedDict = {}
 
     for info in sortedTasks:
-        modifiedDict[info[0]] = [info[1], info[2]]
+        modifiedDict[info[0]] = [info[1], info[2], info[3]]
 
     # COPY SORTED DICTIONARY TO ORIGINAL UNSORTED DICTIONARY
     data.taskItems = modifiedDict
@@ -311,7 +310,7 @@ def task_list_items():
     done = 0
 
     for i in range(len(data.taskItems)):
-        item = tk.Label(scrollable_frame, text= data.taskItems[i][0], bg=check_task_status(data.taskItems[i][1]), fg="white", width=48, height=2, highlightthickness=0, borderwidth=4, anchor="nw")
+        item = tk.Label(scrollable_frame, text= data.taskItems[i][0], bg=check_task_status(data.taskItems[i][2]), fg="white", width=48, height=2, highlightthickness=0, borderwidth=4, anchor="nw")
         taskItemLabels.append(item)
         bind_task_item(item, i, lambda e: item.config(text= 'Works')) 
     
@@ -332,12 +331,9 @@ def close_pop_up(event):
 def check_pop_window(event, title, color, action):
     global ontop, editTask
     if ontop == False:
-        if action == "Add Task":
-            ontop = True
-            pop_up_window(event, title, color, action)
-        elif action == "Edit Task" and editTask['bg'] != "darkgray":
-            ontop = True
-            pop_up_window(event, title, color, action)
+        ontop = True
+        pop_up_window(event, title, color, action)
+
 
 def disable_event():
     pass
@@ -388,7 +384,7 @@ def pop_up_window(event, title, color, action):
     if action == "Edit Task":
         newTask.insert(0, str(data.taskItems[selectedLabel][0]))
         for key, val in option_values_with_status.items():
-            if key == str(data.taskItems[selectedLabel][1]):
+            if key == str(data.taskItems[selectedLabel][2]):
                 option_var = tk.StringVar(value=key)
                 chosen_color = val
     else:
@@ -406,16 +402,19 @@ def pop_up_window(event, title, color, action):
     font=('Calibri 10 bold'))
     task_description.pack()
     task_description.place(x=10, y=95)   
-
+  
     task_descr_text = tk.Text(pop_up, width=70, height=10)
     task_descr_text.pack()
     task_descr_text.place(x=10, y=120)
+
+    if action == "Edit Task":
+        task_descr_text.insert("end", data.taskItems[selectedLabel][1])
 
     # NEW TASK BUTTONS
     actionButton = tk.Button(pop_up, text=action, fg="white", bg="#0066FF", activebackground= "blue", activeforeground="white", highlightthickness=0)
     actionButton.pack()
     actionButton.place(x=485, y=350)  
-    actionButton.bind("<Button-1>", lambda event: choose_action(event, action, newTask.get(), option_var.get()))
+    actionButton.bind("<Button-1>", lambda event: choose_action(event, action, newTask.get(), task_descr_text.get("1.0", "end-1c"), option_var.get()))
 
     cancelNewTask = tk.Button(pop_up, text="Cancel", fg="white", bg="darkgray", activebackground="gray", activeforeground="white", highlightthickness=0)
     cancelNewTask.pack()   
@@ -426,17 +425,17 @@ def pop_up_window(event, title, color, action):
     pop_up.mainloop()
 
 # ---- TASK ACTION FUNCTIONS ---- 
-def choose_action(event, action, taskText, optionVal):
+def choose_action(event, action, taskText, description, optionVal):
     if action == "Add Task":
-        add_new_task(event, taskText, optionVal)
+        add_new_task(event, taskText, description, optionVal)
     elif action == "Edit Task":
-        edit_task_item_label(event, taskText, optionVal)
+        edit_task_item_label(event, taskText, description, optionVal)
 
-def add_new_task(event, newTask, newTaskStatus):
+def add_new_task(event, newTask, description, newTaskStatus):
     global pop_up, ontop
     
-    data.add_task(str(data.totalTasks) + "," + newTask + "," + newTaskStatus) # Add data to txt file
-    data.taskItems[data.totalTasks] = [newTask, newTaskStatus]
+    data.add_task(str(data.totalTasks) + "," + newTask + "," + description + "," + newTaskStatus) # Add data to txt file
+    data.taskItems[data.totalTasks] = [newTask, description, newTaskStatus]
 
     pop_up.destroy()
     ontop = False
@@ -461,7 +460,7 @@ def delete_task_item_label(event):
         display_task_list()
         data_visualization()
 
-def edit_task_item_label(event, taskText, optionVal):
+def edit_task_item_label(event, taskText, description, optionVal):
     global pop_up, ontop
     if selectedLabel != -1 and editTask['bg'] != "gray":
         editTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
@@ -470,10 +469,11 @@ def edit_task_item_label(event, taskText, optionVal):
 
         # Modify Edited Text
         data.taskItems[selectedLabel][0] = taskText
-        data.taskItems[selectedLabel][1] = optionVal
+        data.taskItems[selectedLabel][1] = description
+        data.taskItems[selectedLabel][2] = optionVal
 
         # Modify Text in Txt File
-        data.edit_task(str(selectedLabel), taskText, optionVal)
+        data.edit_task(str(selectedLabel), taskText, description,  optionVal)
 
         # Update Data Displayed
         display_task_list()
