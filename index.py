@@ -331,8 +331,12 @@ def close_pop_up(event):
 def check_pop_window(event, title, color, action):
     global ontop, editTask
     if ontop == False:
-        ontop = True
-        pop_up_window(event, title, color, action)
+        if action == "Add Task":
+            ontop = True
+            pop_up_window(event, title, color, action)
+        elif action == "Edit Task" and editTask['bg'] != "darkgray":
+            ontop = True
+            pop_up_window(event, title, color, action)
 
 
 def disable_event():
