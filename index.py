@@ -79,6 +79,12 @@ editTask.place(x=150, y=450)
 
 status_values = tk.OptionMenu(pop_up, None, None)
 
+# Pie Chart Data + Summary
+pie_data = tk.Canvas(window, width=200, height=450, bg="black", highlightthickness=0)
+data_visuals = tk.Canvas(window, height=250, width=150, bg="black", highlightthickness=0)
+
+task_data = tk.Canvas(window, width=200, height=150, bg="black", highlightthickness=0)
+
 # -------------------------------------------   
 
 def update_time():
@@ -110,56 +116,56 @@ def calculations():
 
     return [(done/data.totalTasks)*360, (incomplete/data.totalTasks)*360, (inProcess/data.totalTasks)*360]
 
-def pie_chart():
-    tk.Label(frame, text="Pie Chart").pack()
-    canvas = tk.Canvas(window, width=200, height=150, bg="black", highlightthickness=0)
-    canvas.pack(anchor="ne")
-    canvas.place(x=490, y=30)
+def data_visualization():
+    global pie_data, data_visuals
 
     if data.totalTasks == 0:
         update_status()
-        canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(359))
+        pie_data.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(359))
     else:
         degrees = calculations()
-        canvas.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(degrees[0] - 0.000001))
-        canvas.create_arc((2,2,150,150), fill="red", outline="red", start=angle(degrees[0]), extent=angle(degrees[1] - 0.000001))
-        canvas.create_arc((2,2,150,150), fill="orange", outline="orange", start=angle(degrees[0] + degrees[1]), extent=angle(degrees[2] -  0.000001))
+        pie_data.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(degrees[0] - 0.000001))
+        pie_data.create_arc((2,2,150,150), fill="red", outline="red", start=angle(degrees[0]), extent=angle(degrees[1] - 0.000001))
+        pie_data.create_arc((2,2,150,150), fill="orange", outline="orange", start=angle(degrees[0] + degrees[1]), extent=angle(degrees[2] -  0.000001))
 
-
-def pie_chart_legend():
-    canvas = tk.Canvas(window, height=80, width=150, bg="black", highlightthickness=0)
-    y_ = 0
+    y_ = 165
 
     colors = [["red", "Incomplete"], ["orange", "InProcess"], ["green", "Done"],["gray", "None"]]
     for i in range(0, len(colors)):
-        square = canvas.create_rectangle(0, 0, 10, 10, fill=colors[i][0], outline=colors[i][0])  # Make the rectangle larger
-        canvas.move(square, 30, y_)
-        label = tk.Label(canvas, text=colors[i][1], font=("Arial Bold", 7), bg="black", fg="white")
+        square = pie_data.create_rectangle(0, 0, 10, 10, fill=colors[i][0], outline=colors[i][0])  # Make the rectangle larger
+        pie_data.move(square, 30, y_)
+        label = tk.Label(pie_data, text=colors[i][1], font=("Arial Bold", 7), bg="black", fg="white")
         label.place(x=50, y=y_)  # Adjust the position of the label within the canvas
         y_ += 20
 
-    canvas.pack(anchor="center")
-    canvas.place(x=490, y=200)
+    y_ = 10
 
+    # SUMMARY DATA 
+    summary_label = tk.Label(data_visuals, text="Summary", font=("Arial Bold", 10), bg="blue", fg="white", padx= 40)
+    summary_label.place(x=0, y=y_)  # Adjust the position of the label within the canvas
 
-def summary_data():
-    # FRAME FOR SUMMARY
-    frame = tk.Frame(window, height=20, width=150, bg="blue")
-    frame.place(x=490, y=290)
-    tk.Label(frame, text="Summary", bg="blue", fg="white").pack(anchor="n")
-    frame.pack_propagate(0)
-    _y = 320
+    y_ += 40
 
     arr = [["Total Tasks:      ", len(data.taskItems)], ["Completed:       ", done], ["In Process:        ", inProcess], ["Missing:            ", incomplete]]
     for item, count in arr:
         # Create a label widget in Tkinter
-        label = tk.Label(window, text = item + " " + str(count),
+        label = tk.Label(data_visuals, text = item + " " + str(count),
         fg = "white",
         bg = "black",
         font=('Calibri 10'))
         label.pack()
-        label.place(x=500, y=_y)
-        _y += 20
+        label.place(x=15, y=y_)
+        y_ += 20
+
+
+    # PIE CHART
+    pie_data.pack(anchor="ne")
+    pie_data.place(x=490, y=30)
+
+    # PIE CHART DATA SUMMARY
+    data_visuals.pack(anchor="center")
+    data_visuals.place(x=490, y=280)
+    
 
 def check_task_status(status):
     if status == "Done" or status == "Done":
@@ -185,16 +191,22 @@ def label_clicked(event, text, num):
         deleteTask.config(bg=deleteTaskColor, activebackground="#D6001C", activeforeground="white")
         editTask.config(bg=editTaskColor, activebackground="dark" + editTaskColor, activeforeground="white")
 
+        task_item_pop_up(selectedLabel)
+
     elif selectedLabel == num: # if same label is clicked twice, unselect label
         if taskItemLabels[selectedLabel]['relief'] == "raised":
             taskItemLabels[selectedLabel].config(relief="flat") 
             deleteTask.config(bg=defaultColor, activebackground=defaultColor, activeforeground="white")
             editTask.config(bg=defaultColor, activebackground=defaultColor, activeforeground="white")
 
+            data_visualization_pop_up()
+
         else:
             taskItemLabels[selectedLabel].config(relief="raised") 
             deleteTask.config(bg=deleteTaskColor, activebackground="dark" + deleteTaskColor, activeforeground="white")
             editTask.config(bg=editTaskColor, activebackground="dark" + editTaskColor, activeforeground="white")
+
+            task_item_pop_up(selectedLabel)
 
 
     else: # if different label is clicked and previous is selected
@@ -203,6 +215,36 @@ def label_clicked(event, text, num):
         selectedLabel = num
         deleteTask.config(bg=deleteTaskColor, activebackground="dark" + deleteTaskColor, activeforeground="white")
         editTask.config(bg=editTaskColor, activebackground="dark" + editTaskColor, activeforeground="white")
+
+        task_item_pop_up(selectedLabel)
+
+# SHOW LABEL ITEM DATA AND HIDE PIE CHART DATA + SUMMARY
+def task_item_pop_up(selectedLabel):
+    pie_data.pack_forget()
+    pie_data.place_forget()
+    
+
+    task_data.pack(anchor="center")
+    task_data.place(x=475, y=30)
+
+    task_name = tk.Label(task_data, text="Task Information", font=("Arial Bold", 10), bg="blue", fg="white", padx=50)
+    task_name.place(x=0, y=10)  # Adjust the position of the label within the canvas
+
+    task_name = tk.Label(task_data, text="Task Name: " + data.taskItems[selectedLabel][0], font=("Arial Bold", 9), bg="black", fg="white")
+    task_name.place(x=0, y=50)
+
+    task_description = tk.Label(task_data, text="Task Description: " + data.taskItems[selectedLabel][0], font=("Arial Bold", 9), bg="black", fg="white")
+    task_description.place(x=0, y=70)
+
+# RESHOW PIE CHART DATA AND SUMMARY
+def data_visualization_pop_up():
+    task_data.pack_forget()
+    task_data.place_forget()
+
+    # PIE CHART
+    pie_data.pack(anchor="ne")
+    pie_data.place(x=490, y=30)
+
 
 def bind_task_item(task, num, command):
 
@@ -280,8 +322,7 @@ def task_list_items():
     if scrollable_frame.winfo_height() > 220:
         scrollbar.pack(side="right", fill="both")
 
-    pie_chart()
-    summary_data()
+    data_visualization()
 
 def close_pop_up(event):
     global ontop
@@ -418,8 +459,7 @@ def delete_task_item_label(event):
         editTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
 
         display_task_list()
-        pie_chart()
-        summary_data()
+        data_visualization()
 
 def edit_task_item_label(event, taskText, optionVal):
     global pop_up, ontop
@@ -437,8 +477,7 @@ def edit_task_item_label(event, taskText, optionVal):
 
         # Update Data Displayed
         display_task_list()
-        pie_chart()
-        summary_data()
+        data_visualization()
 
 def task_list_actions():
     global deleteTask
@@ -460,9 +499,7 @@ def task_list_actions():
 
 
 # ------------------------------------------- FUNCTION CALLS -------------------------------------------
-pie_chart()
-pie_chart_legend()
-summary_data()
+data_visualization()
 display_task_list()
 task_list_actions()
 

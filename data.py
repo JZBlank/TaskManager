@@ -77,6 +77,6 @@ def data_to_dict():
             totalTasks += 1 # keep track of total tasks in txt file
             line_split = line.split(",")
             if line_split:
-                taskItems[line_split[0]] = [line_split[1], line_split[2]]
+                taskItems[line_split[0]] = [line_split[1], line_split[2].strip("\n")]
 
 check_data()
