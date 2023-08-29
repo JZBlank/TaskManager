@@ -15,7 +15,7 @@ TaskManager is a desktop app aimed to help organize and plan out to-do list item
 
 ## ToDo Objectives
 - [] Change Summary Label to same width as task label pop-up
-- [] ...
+- [] Fix task label pop-up (Task Name and Description not updating properly)
 
 
 ## APP IMAGES:
