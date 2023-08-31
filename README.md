@@ -12,9 +12,9 @@ TaskManager is a desktop app aimed to help organize and plan out to-do list item
 - [X] Users are able to edit tasks from list
 - [X] Data is currently recorded and stored on txt file... (Plan on updating this method of recording)
 - [X] When user clicks on task label, pop-up to the right shows data related to specific task
+- [X] Change Summary Label to same width as task label pop-up
 
 ## ToDo Objectives
-- [] Change Summary Label to same width as task label pop-up
 - [] Fix task label pop-up (Task Name and Description not updating properly)
 
 

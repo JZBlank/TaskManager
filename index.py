@@ -81,8 +81,12 @@ status_values = tk.OptionMenu(pop_up, None, None)
 
 # Pie Chart Data + Summary
 pie_data = tk.Canvas(window, width=200, height=450, bg="black", highlightthickness=0)
-data_visuals = tk.Canvas(window, height=250, width=150, bg="black", highlightthickness=0)
+data_visuals = tk.Canvas(window, width=200, height=250, bg="black", highlightthickness=0)
 task_data = tk.Canvas(window, width=200, height=250, bg="black", highlightthickness=0)
+
+# Task Data information
+task_name = tk.Label()
+task_description = tk.Label()
 
 # -------------------------------------------   
 
@@ -140,7 +144,7 @@ def data_visualization():
     y_ = 10
 
     # SUMMARY DATA 
-    summary_label = tk.Label(data_visuals, text="Summary", font=("Arial Bold", 10), bg="blue", fg="white", padx= 40)
+    summary_label = tk.Label(data_visuals, text="Status Summary", font=("Arial Bold", 10), bg="blue", fg="white", padx= 50)
     summary_label.place(x=0, y=y_)  # Adjust the position of the label within the canvas
 
     y_ += 40
@@ -153,7 +157,7 @@ def data_visualization():
         bg = "black",
         font=('Calibri 10'))
         label.pack()
-        label.place(x=15, y=y_)
+        label.place(x=45, y=y_)
         y_ += 20
 
 
@@ -163,8 +167,7 @@ def data_visualization():
 
     # PIE CHART DATA SUMMARY
     data_visuals.pack(anchor="center")
-    data_visuals.place(x=490, y=280)
-    
+    data_visuals.place(x=475, y=280)
 
 def check_task_status(status):
     if status == "Done" or status == "Done":
@@ -219,27 +222,37 @@ def label_clicked(event, text, num):
 
 # SHOW LABEL ITEM DATA AND HIDE PIE CHART DATA + SUMMARY
 def task_item_pop_up(selectedLabel):
+    global task_name, task_description
+
     pie_data.pack_forget()
     pie_data.place_forget()
+
+    # task_data = tk.Canvas(window, width=200, height=250, bg="black", highlightthickness=0)
 
     task_data.pack(anchor="center")
     task_data.place(x=475, y=30)
 
-    task_name = tk.Label(task_data, text="Task Information", font=("Arial Bold", 10), bg="blue", fg="white", padx=50)
-    task_name.place(x=0, y=10)  # Adjust the position of the label within the canvas
+    task_info = tk.Label(task_data, text="Task Information", font=("Arial Bold", 10), bg="blue", fg="white", padx=50)
+    task_info.place(x=0, y=10)  # Adjust the position of the label within the canvas
 
     task_name = tk.Label(task_data, text="Task Name: " + data.taskItems[selectedLabel][0], font=("Arial Bold", 9), bg="black", fg="white")
-    task_name.place(x=0, y=50)
-
     task_description = tk.Label(task_data, text="Task Description: " + data.taskItems[selectedLabel][1], font=("Arial Bold", 9), bg="black", fg="white", wraplength= 200, justify="left")
+
+    task_name.place(x=0, y=50)
     task_description.place(x=0, y=70)
 
-    task_description.update_idletasks()
 
 # RESHOW PIE CHART DATA AND SUMMARY
 def data_visualization_pop_up():
+    global task_name, task_description
+
+    # task_name.destroy()
+    # task_description.destroy()
+
     task_data.pack_forget()
     task_data.place_forget()
+
+    # task_data.destroy()
 
     # PIE CHART
     pie_data.pack(anchor="ne")
