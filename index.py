@@ -31,7 +31,7 @@ window['highlightbackground'] = 'black'
 today = date.today().strftime("%b %d, %Y")
 weekday = date.today().strftime("%A")
 currentTime = time.localtime()
-timeNow = time.strftime("%-I:%M %p %Z ", currentTime)
+timeNow = time.strftime("%I:%M %p %Z ", currentTime)
 
 # Create a label widget in Tkinter
 label = tk.Label(window, text=weekday + " " + today,
@@ -92,7 +92,7 @@ task_description = tk.Label()
 
 def update_time():
     currentTime = time.localtime()
-    timeNow = time.strftime("%-I:%M %p %Z ", currentTime)
+    timeNow = time.strftime("%I:%M %p %Z ", currentTime)
     label["text"] = timeNow
     window.after(1000, update_time)
 

@@ -1,10 +1,30 @@
 import os
+import sys
 
 name = "data.txt"
 name2 = "updated_data.txt"
 
 taskItems = {}
 totalTasks = 0
+
+def resource_path(relative_path):
+    """ Get the absolute path to the resource, works for dev and PyInstaller """
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+data_file = resource_path('data.txt')
+data_file2 = resource_path('updated_data.txt')
+
+with open(data_file, 'r') as f:
+    content = f.read()
+
+name = data_file
+name2 = data_file2
+#---------
 
 def add_task(task):
     global totalTasks
@@ -60,6 +80,9 @@ def edit_task(selectedLabel, task, description, status):
         print('Error')
 
     open(name, "w") # removes all text
+    if os.path.exists(name):
+        os.remove(name)
+        
     os.rename(name2, name)  #rename updated file to original
     original_data = new_data
     new_data.close()
