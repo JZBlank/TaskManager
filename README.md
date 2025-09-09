@@ -20,7 +20,12 @@ TaskManager is a desktop app aimed to help organize and plan out to-do list item
 
 ## ToDo Objectives
 - [] Fix task label pop-up (Task Name and Description not updating properly)
+- [] Be able to schedule tasks manually weekly/monthly,etc
 
+## Nice to haves
+- [] Toggle color theme for App (Light vs Dark)
+- [] Add character mascot to screen
+- [] Save completed todo to a google spreadsheet
 
 ## APP IMAGES:
 ![image](https://github.com/JZBlank/TaskManager/assets/56086743/4f5cb15d-9335-46cf-aa6e-ede6306c482e)
