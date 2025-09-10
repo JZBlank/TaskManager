@@ -7,7 +7,6 @@ TaskManager is a desktop app aimed to help organize and plan out to-do list item
 ## Feel free to try out the app by downloading the following executable file:
 [TaskManager.Exe](https://github.com/JZBlank/TaskManager/releases/tag/v1.0.0)
 
-
 ## Completed Objectives
 - [X] Task List is displayable to user and scrollbar appears when items exceed height of window
 - [X] Pie Chart + legend and summary is implemented to keep track of what tasks need to get done / are done.

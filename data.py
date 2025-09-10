@@ -67,15 +67,14 @@ def delete_task(selectedLabel):
 def delete_all():
     open(name, "w")
 
-def edit_task(selectedLabel, task, description, status):
+def edit_task(selectedLabel, task, description, status, taskItems):
     try:
         with open(name, "r") as original_data:
             with open(name2, "w") as new_data: 
+                index = 0
                 for line in original_data:
-                    if str(selectedLabel) not in line.strip("\n"):
-                        new_data.write(line)
-                    else:
-                        new_data.write(str(selectedLabel) + "," + task + "," + description + "," + status + "\n")
+                    new_data.write(str(index) + "," + str(taskItems[index][0]) + "," + str(taskItems[index][1]) + "," + str(taskItems[index][2]) + "\n")
+                    index += 1
     except:
         print('Error')
 

@@ -479,6 +479,7 @@ def delete_task_item_label(event):
 
 def edit_task_item_label(event, taskText, description, optionVal):
     global pop_up, ontop
+
     if selectedLabel != -1 and editTask['bg'] != "gray":
         editTask.config(bg="darkgray", activebackground="gray", activeforeground="white")
         pop_up.destroy()
@@ -489,8 +490,11 @@ def edit_task_item_label(event, taskText, description, optionVal):
         data.taskItems[selectedLabel][1] = description
         data.taskItems[selectedLabel][2] = optionVal
 
+        # Sort data above so we can use to update txt file item order correctly
+        sort_taskItemDict()
+
         # Modify Text in Txt File
-        data.edit_task(str(selectedLabel), taskText, description,  optionVal)
+        data.edit_task(str(selectedLabel), taskText, description,  optionVal, data.taskItems)
 
         # Update Data Displayed
         display_task_list()
