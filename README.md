@@ -5,7 +5,7 @@ TaskManager Desktop App
 TaskManager is a desktop app aimed to help organize and plan out to-do list items for your day. 
 
 ## Feel free to try out the app by downloading the following executable file:
-[TaskManager.Exe](https://github.com/JZBlank/TaskManager/releases/tag/v1.0.0)
+[TaskManager.Exe](https://github.com/JZBlank/TaskManager/releases/tag/v1.0.1)
 
 ## Completed Objectives
 - [X] Task List is displayable to user and scrollbar appears when items exceed height of window
@@ -19,9 +19,13 @@ TaskManager is a desktop app aimed to help organize and plan out to-do list item
 
 ## ToDo Objectives
 - [X] Fix Edit Functionality (Tasks in program are not matching with txt file so gets updated incorrectly)
-- [] Be able to schedule tasks manually weekly/monthly,etc
+- [] Fix label not updating properly when clicking on item
+- [X] Fix pie chart showing yellow section
+- [] Do not allow empty title task to be created
+- [] Do not allow edit task button to open new window when grayed out
 
 ## Nice to haves
+- [] Be able to schedule tasks manually weekly/monthly,etc
 - [] Toggle color theme for App (Light vs Dark)
 - [] Add character mascot to screen
 - [] Save completed todo to a google spreadsheet

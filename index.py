@@ -125,11 +125,29 @@ def data_visualization():
     if data.totalTasks == 0:
         update_status()
         pie_data.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(359))
+    elif data.totalTasks == 1:
+        degrees = calculations()
+        color = ""
+
+        if degrees[0] > 0:
+            color = "green"
+        elif degrees[1] > 0:
+            color = "red"
+        elif degrees[2] > 0:
+            color = "orange"
+        
+        pie_data.create_arc((2,2,150,150), fill=color, outline=color, start=angle(0), extent=angle(359))
+
     else:
         degrees = calculations()
-        pie_data.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(degrees[0] - 0.000001))
-        pie_data.create_arc((2,2,150,150), fill="red", outline="red", start=angle(degrees[0]), extent=angle(degrees[1] - 0.000001))
-        pie_data.create_arc((2,2,150,150), fill="orange", outline="orange", start=angle(degrees[0] + degrees[1]), extent=angle(degrees[2] -  0.000001))
+
+        green_arc = degrees[0] - 0.000001
+        red_arc = degrees[1] - 0.000001
+        orange_arc = degrees[2] - 0.000001
+
+        pie_data.create_arc((2,2,150,150), fill="green", outline="green", start=angle(0), extent=angle(green_arc))
+        pie_data.create_arc((2,2,150,150), fill="red", outline="red", start=angle(green_arc), extent=angle(red_arc))
+        pie_data.create_arc((2,2,150,150), fill="orange", outline="orange", start=angle(green_arc + red_arc), extent=angle(orange_arc))
 
     y_ = 165
 
