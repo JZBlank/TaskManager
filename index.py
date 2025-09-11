@@ -21,7 +21,7 @@ window = tk.Tk()
 window.title(" Task Manager ")
  
 # Define window size in Tkinter python
-window.geometry("700x500")
+window.geometry("700x700")
 window.update_idletasks() # Redraw widgets without calling any callbacks *Updates size of window*
 
 # Define window background color
@@ -61,13 +61,13 @@ tasklist_frame = tk.Frame(window, height=300, width=400, bg="orange", borderwidt
 tasklist_canvas = tk.Canvas(tasklist_frame, height=300, width=400, bg="red", borderwidth= 0, highlightthickness=0)
 
 scrollbar = tk.Scrollbar(tasklist_frame, orient="vertical", command=tasklist_canvas.yview, borderwidth= 0, highlightthickness=0, width=5)
-scrollable_frame = tk.Frame(tasklist_canvas, background="black", borderwidth= 0, highlightthickness=0)
+scrollable_frame = tk.Frame(tasklist_canvas, background="black", borderwidth= 1, highlightthickness=0)
 
 scrollable_frame.bind("<Configure>", lambda e : tasklist_canvas.configure(scrollregion=tasklist_canvas.bbox("all")))
 tasklist_canvas.create_window((0,0), window=scrollable_frame, anchor="nw")
 
 tasklist_canvas.configure(yscrollcommand=scrollbar.set)
-tasklist_canvas.config(background="black")
+tasklist_canvas.config(background="#36454F")
 
 pop_up = tk.Frame(bg="red")
 deleteTask = tk.Button(window, text="Delete Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white", highlightthickness=0)
@@ -241,20 +241,17 @@ def label_clicked(event, text, num):
 # SHOW LABEL ITEM DATA AND HIDE PIE CHART DATA + SUMMARY
 def task_item_pop_up(selectedLabel):
     global task_name, task_description
-
-    pie_data.pack_forget()
-    pie_data.place_forget()
-
-    # task_data = tk.Canvas(window, width=200, height=250, bg="black", highlightthickness=0)
+    
+    task_data = tk.Canvas(window, width=550, height=300, bg="black", highlightthickness=0)
 
     task_data.pack(anchor="center")
-    task_data.place(x=475, y=30)
+    task_data.place(x=20, y=500)
 
     task_info = tk.Label(task_data, text="Task Information", font=("Arial Bold", 10), bg="blue", fg="white", padx=50)
     task_info.place(x=0, y=10)  # Adjust the position of the label within the canvas
 
     task_name = tk.Label(task_data, text="Task Name: " + data.taskItems[selectedLabel][0], font=("Arial Bold", 9), bg="black", fg="white")
-    task_description = tk.Label(task_data, text="Task Description: " + data.taskItems[selectedLabel][1], font=("Arial Bold", 9), bg="black", fg="white", wraplength= 200, justify="left")
+    task_description = tk.Label(task_data, text="Task Description: " + data.taskItems[selectedLabel][1], font=("Arial Bold", 9), bg="black", fg="white", wraplength= 600, justify="left")
 
     task_name.place(x=0, y=50)
     task_description.place(x=0, y=70)
