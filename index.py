@@ -16,7 +16,7 @@ ontop = False
 
 # Create window Tkinter
 window = tk.Tk()
- 
+
 # Name our Tkinter application title
 window.title(" Task Manager ")
  
@@ -362,7 +362,7 @@ def check_pop_window(event, title, color, action):
         if action == "Add Task":
             ontop = True
             pop_up_window(event, title, color, action)
-        elif action == "Edit Task" and editTask['bg'] != "darkgray":
+        elif action == "Edit Task" and editTask['bg'] != "gray":
             ontop = True
             pop_up_window(event, title, color, action)
 
@@ -428,6 +428,13 @@ def pop_up_window(event, title, color, action):
     status_values.pack()
     status_values.place(x=420, y=35)
 
+    # Show error label when user selects 'Add Task' button and task name field is empty
+    frame = tk.Frame(pop_up, height=20, width=393, bg="black")
+    frame.place(x=0, y=65)
+    error_label = tk.Label(frame, text="Field above must not be empty", bg="red")
+    error_label.pack(anchor="w", padx=10)
+    error_label.pack_forget()
+
     task_description = tk.Label(pop_up, text= "Task Description",
     fg = "white",
     bg = "black",
@@ -446,7 +453,7 @@ def pop_up_window(event, title, color, action):
     actionButton = tk.Button(pop_up, text=action, fg="white", bg="#0066FF", activebackground= "blue", activeforeground="white", highlightthickness=0)
     actionButton.pack()
     actionButton.place(x=485, y=350)  
-    actionButton.bind("<Button-1>", lambda event: choose_action(event, action, newTask.get(), task_descr_text.get("1.0", "end-1c"), option_var.get()))
+    actionButton.bind("<Button-1>", lambda event: choose_action(event, action, newTask.get(), task_descr_text.get("1.0", "end-1c"), option_var.get(), errorLabel=error_label))
 
     cancelNewTask = tk.Button(pop_up, text="Cancel", fg="white", bg="darkgray", activebackground="gray", activeforeground="white", highlightthickness=0)
     cancelNewTask.pack()   
@@ -457,11 +464,14 @@ def pop_up_window(event, title, color, action):
     pop_up.mainloop()
 
 # ---- TASK ACTION FUNCTIONS ---- 
-def choose_action(event, action, taskText, description, optionVal):
-    if action == "Add Task":
-        add_new_task(event, taskText, description, optionVal)
-    elif action == "Edit Task":
-        edit_task_item_label(event, taskText, description, optionVal)
+def choose_action(event, action, taskText, description, optionVal, errorLabel):
+    if taskText != "":
+        if action == "Add Task":
+            add_new_task(event, taskText, description, optionVal)
+        elif action == "Edit Task":
+            edit_task_item_label(event, taskText, description, optionVal)
+    else:
+        errorLabel.pack(anchor="w", padx=10)
 
 def add_new_task(event, newTask, description, newTaskStatus):
     global pop_up, ontop

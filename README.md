@@ -16,13 +16,14 @@ TaskManager is a desktop app aimed to help organize and plan out to-do list item
 - [X] Data is currently recorded and stored on txt file... (Plan on updating this method of recording)
 - [X] When user clicks on task label, pop-up to the right shows data related to specific task
 - [X] Change Summary Label to same width as task label pop-up
-
-## ToDo Objectives
 - [X] Fix Edit Functionality (Tasks in program are not matching with txt file so gets updated incorrectly)
 - [X] Move position of task information label to bottom of screen for better user experience
 - [X] Fix pie chart showing yellow section
-- [] Do not allow empty title task to be created
-- [] Do not allow edit task button to open new window when grayed out
+- [X] Do not allow empty title task to be created
+- [X] Do not allow edit task button to open new window when grayed out
+
+## ToDo Objectives
+- [] Improve UI
 
 ## Nice to haves
 - [] Be able to schedule tasks manually weekly/monthly,etc
