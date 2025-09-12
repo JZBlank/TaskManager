@@ -23,7 +23,6 @@ TaskManager is a desktop app aimed to help organize and plan out to-do list item
 - [X] Do not allow edit task button to open new window when grayed out
 
 ## ToDo Objectives
-- [] Improve UI
 
 ## Nice to haves
 - [] Be able to schedule tasks manually weekly/monthly,etc

@@ -71,11 +71,11 @@ tasklist_canvas.config(background="#36454F")
 
 pop_up = tk.Frame(bg="red")
 deleteTask = tk.Button(window, text="Delete Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white", highlightthickness=0)
-deleteTask.place(x=250, y=450)
+deleteTask.place(x=250, y=650)
 
 editTask = tk.Button(window, text="Edit Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white", highlightthickness=0)
 editTask.pack(anchor="s")
-editTask.place(x=150, y=450)
+editTask.place(x=150, y=650)
 
 status_values = tk.OptionMenu(pop_up, None, None)
 
@@ -228,7 +228,6 @@ def label_clicked(event, text, num):
 
             task_item_pop_up(selectedLabel)
 
-
     else: # if different label is clicked and previous is selected
         taskItemLabels[selectedLabel].config(relief="flat") 
         taskItemLabels[num].config(relief="raised")
@@ -242,20 +241,29 @@ def label_clicked(event, text, num):
 def task_item_pop_up(selectedLabel):
     global task_name, task_description
     
-    task_data = tk.Canvas(window, width=550, height=300, bg="black", highlightthickness=0)
+    task_data = tk.Canvas(window, width=550, height=200, bg="black", highlightthickness=0)
 
     task_data.pack(anchor="center")
-    task_data.place(x=20, y=500)
+    task_data.place(x=20, y=430)
 
-    task_info = tk.Label(task_data, text="Task Information", font=("Arial Bold", 10), bg="blue", fg="white", padx=50)
-    task_info.place(x=0, y=10)  # Adjust the position of the label within the canvas
+    frame = tk.Frame(window, height=20, width=393, bg="blue")
+    frame.place(x=20, y=440)
+    task_info = tk.Label(frame, text="Task Information", bg="blue", fg="white")
+    task_info.pack(anchor="w", pady=10, padx=20)
+    task_info.place(x=0, y=0)  # Adjust the position of the label within the canvas
 
-    task_name = tk.Label(task_data, text="Task Name: " + data.taskItems[selectedLabel][0], font=("Arial Bold", 9), bg="black", fg="white")
-    task_description = tk.Label(task_data, text="Task Description: " + data.taskItems[selectedLabel][1], font=("Arial Bold", 9), bg="black", fg="white", wraplength= 600, justify="left")
+    task_name = "No task selected"
+    task_details = ""
 
-    task_name.place(x=0, y=50)
-    task_description.place(x=0, y=70)
+    if selectedLabel != -1:
+        task_name = "Task Name: " + data.taskItems[selectedLabel][0]
+        task_details = "Task Description: " + data.taskItems[selectedLabel][1]
 
+    task_name = tk.Label(task_data, text=task_name, font=("Arial Bold", 9), bg="black", fg="white")
+    task_description = tk.Label(task_data, text=task_details, font=("Arial Bold", 9), bg="black", fg="white", wraplength= 600, justify="left")
+
+    task_name.place(x=0, y=40)
+    task_description.place(x=0, y=60)
 
 # RESHOW PIE CHART DATA AND SUMMARY
 def data_visualization_pop_up():
@@ -531,7 +539,7 @@ def task_list_actions():
     # Add a New Task
     addNewTask = tk.Button(window, text="Add New Task", fg="white", bg="#0066FF", activebackground="blue", activeforeground="white", highlightthickness=0)
     addNewTask.pack(anchor="s")
-    addNewTask.place(x=20, y=450)
+    addNewTask.place(x=20, y=650)
     addNewTask.bind("<Button-1>", lambda event: check_pop_window(event, "Add New Task", "#0066FF", "Add Task"))
 
     # Remove a Task
@@ -541,14 +549,11 @@ def task_list_actions():
     # Edit a Task
     editTask.bind("<Button-1>", lambda event: check_pop_window(event, "Edit Task", "orange", "Edit Task"))
 
-
-
-
 # ------------------------------------------- FUNCTION CALLS -------------------------------------------
+task_item_pop_up(-1)
 data_visualization()
 display_task_list()
 task_list_actions()
-
 
 # Every second, the function update_time is called, updating time
 window.after(1000, update_time)
