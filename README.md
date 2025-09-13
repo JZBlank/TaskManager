@@ -21,6 +21,7 @@ TaskManager is a desktop app aimed to help organize and plan out to-do list item
 - [X] Fix pie chart showing yellow section
 - [X] Do not allow empty title task to be created
 - [X] Do not allow edit task button to open new window when grayed out
+- [X] Improve exe UI (increased font size to improve alignment and spacing)
 
 ## ToDo Objectives
 

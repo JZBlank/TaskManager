@@ -2,13 +2,12 @@
 import tkinter as tk
 from tkinter import simpledialog
 from tkinter import messagebox
+import tkinter.font as tkFont
 
 from datetime import date
 import time
-
 import data
 
-# Variables 
 done = 0
 incomplete = 0
 inProcess = 0
@@ -19,7 +18,10 @@ window = tk.Tk()
 
 # Name our Tkinter application title
 window.title(" Task Manager ")
- 
+
+default_font = tkFont.nametofont("TkDefaultFont")
+default_font.configure(family="Segoe UI", size=11)
+
 # Define window size in Tkinter python
 window.geometry("700x700")
 window.update_idletasks() # Redraw widgets without calling any callbacks *Updates size of window*
@@ -249,7 +251,7 @@ def task_item_pop_up(selectedLabel):
     frame = tk.Frame(window, height=20, width=393, bg="blue")
     frame.place(x=20, y=440)
     task_info = tk.Label(frame, text="Task Information", bg="blue", fg="white")
-    task_info.pack(anchor="w", pady=10, padx=20)
+    task_info.pack(anchor="w", pady=20, padx=20)
     task_info.place(x=0, y=0)  # Adjust the position of the label within the canvas
 
     task_name = "No task selected"
