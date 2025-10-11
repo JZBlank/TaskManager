@@ -15,6 +15,7 @@ ontop = False
 
 # Create window Tkinter
 window = tk.Tk()
+window.tk.call('tk', 'scaling', 1.0)
 
 # Name our Tkinter application title
 window.title(" Task Manager ")
