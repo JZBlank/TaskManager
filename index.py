@@ -21,7 +21,10 @@ window.tk.call('tk', 'scaling', 1.0)
 window.title(" Task Manager ")
 
 default_font = tkFont.nametofont("TkDefaultFont")
-default_font.configure(family="Segoe UI", size=11)
+default_font.configure(family="Segoe UI", size=15)
+
+# Set default font for tkinter
+window.option_add("*Font", f"{default_font}")
 
 # Define window size in Tkinter python
 window.geometry("700x700")
@@ -40,19 +43,19 @@ timeNow = time.strftime("%I:%M %p %Z ", currentTime)
 label = tk.Label(window, text=weekday + " " + today,
 fg = "white",
 bg = "black",
-font=('Calibri 15 bold'))
+font=('Calibri 20 bold'))
 label.pack(pady=5, padx=20, anchor="w")
 
 label = tk.Label(window, text=timeNow,
 fg = "white",
 bg = "black",
-font=('Calibri 15 bold'))
+font=('Calibri 20 bold'))
 label.pack(pady=5, padx=20, anchor="w")
 
 # FRAME FOR TODAY 
-frame = tk.Frame(window, height=20, width=393, bg="blue")
+frame = tk.Frame(window, height=25, width=393, bg="blue")
 frame.place(x=20, y=90)
-label2 = tk.Label(frame, text="Today", bg="blue", fg="white").pack(anchor="w", pady=5, padx=20)
+label2 = tk.Label(frame, text="Today", bg="blue", fg="white", height=25).pack(anchor="w", pady=5, padx=5)
 frame.pack_propagate(0)
 
 # TASK ITEMS
@@ -158,25 +161,25 @@ def data_visualization():
     for i in range(0, len(colors)):
         square = pie_data.create_rectangle(0, 0, 10, 10, fill=colors[i][0], outline=colors[i][0])  # Make the rectangle larger
         pie_data.move(square, 30, y_)
-        label = tk.Label(pie_data, text=colors[i][1], font=("Arial Bold", 7), bg="black", fg="white")
+        label = tk.Label(pie_data, text=colors[i][1], font=("Arial Bold", 15), bg="black", fg="white")
         label.place(x=50, y=y_)  # Adjust the position of the label within the canvas
         y_ += 20
 
     y_ = 10
 
     # SUMMARY DATA 
-    summary_label = tk.Label(data_visuals, text="Status Summary", font=("Arial Bold", 10), bg="blue", fg="white", padx= 50)
+    summary_label = tk.Label(data_visuals, text="Status Summary", font=("Arial Bold", 15), bg="blue", fg="white", padx= 50)
     summary_label.place(x=0, y=y_)  # Adjust the position of the label within the canvas
 
     y_ += 40
 
-    arr = [["Total Tasks:      ", len(data.taskItems)], ["Completed:       ", done], ["In Process:        ", inProcess], ["Missing:            ", incomplete]]
+    arr = [["Total Tasks:      ", len(data.taskItems)], ["Completed:     ", done], ["In Process:       ", inProcess], ["Missing:            ", incomplete]]
     for item, count in arr:
         # Create a label widget in Tkinter
         label = tk.Label(data_visuals, text = item + " " + str(count),
         fg = "white",
         bg = "black",
-        font=('Calibri 10'))
+        font=('Calibri 15'))
         label.pack()
         label.place(x=45, y=y_)
         y_ += 20
@@ -249,24 +252,24 @@ def task_item_pop_up(selectedLabel):
     task_data.pack(anchor="center")
     task_data.place(x=20, y=430)
 
-    frame = tk.Frame(window, height=20, width=393, bg="blue")
+    frame = tk.Frame(window, height=25, width=393, bg="blue")
     frame.place(x=20, y=440)
     task_info = tk.Label(frame, text="Task Information", bg="blue", fg="white")
     task_info.pack(anchor="w", pady=20, padx=20)
-    task_info.place(x=0, y=0)  # Adjust the position of the label within the canvas
+    task_info.place(x=5, y=0)  # Adjust the position of the label within the canvas
 
     task_name = "No task selected"
     task_details = ""
 
     if selectedLabel != -1:
-        task_name = "Task Name: " + data.taskItems[selectedLabel][0]
-        task_details = "Task Description: " + data.taskItems[selectedLabel][1]
+        task_name = data.taskItems[selectedLabel][0]
+        task_details = data.taskItems[selectedLabel][1]
 
-    task_name = tk.Label(task_data, text=task_name, font=("Arial Bold", 9), bg="black", fg="white")
-    task_description = tk.Label(task_data, text=task_details, font=("Arial Bold", 9), bg="black", fg="white", wraplength= 600, justify="left")
+    task_name = tk.Label(task_data, text=task_name, font=("Arial Bold", 20), bg="black", fg="white")
+    task_description = tk.Label(task_data, text=task_details, font=("Arial", 15), bg="black", fg="white", wraplength= 600, justify="left")
 
     task_name.place(x=0, y=40)
-    task_description.place(x=0, y=60)
+    task_description.place(x=0, y=70)
 
 # RESHOW PIE CHART DATA AND SUMMARY
 def data_visualization_pop_up():
@@ -403,14 +406,14 @@ def pop_up_window(event, title, color, action):
     task_name = tk.Label(pop_up, text= "Task Name",
     fg = "white",
     bg = "black",
-    font=('Calibri 10 bold'))
+    font=('Calibri 15 bold'))
     task_name.pack()
     task_name.place(x=10, y=15)
 
     task_status = tk.Label(pop_up, text= "Status",
     fg = "white",
     bg = "black",
-    font=('Calibri 10 bold'))
+    font=('Calibri 15 bold'))
     task_status.pack()
     task_status.place(x=420, y=15)
 
@@ -449,7 +452,7 @@ def pop_up_window(event, title, color, action):
     task_description = tk.Label(pop_up, text= "Task Description",
     fg = "white",
     bg = "black",
-    font=('Calibri 10 bold'))
+    font=('Calibri 15 bold'))
     task_description.pack()
     task_description.place(x=10, y=95)   
   
