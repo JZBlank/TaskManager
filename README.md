@@ -24,6 +24,9 @@ TaskManager is a desktop app aimed to help organize and plan out to-do list item
 - [X] Improve exe UI (increased font size to improve alignment and spacing)
 
 ## ToDo Objectives
+- [] Fix scroll bar disappearing when exiting and reopening app
+- [] Add scroll functionality with mouse wheel
+- [] Fix button highlighting not working in exe file
 
 ## Nice to haves
 - [] Be able to schedule tasks manually weekly/monthly,etc
