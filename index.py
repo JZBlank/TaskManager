@@ -157,18 +157,18 @@ def data_visualization():
 
     y_ = 165
 
-    colors = [["red", "Incomplete"], ["orange", "InProcess"], ["green", "Done"],["gray", "None"]]
+    colors = [["red", "Incomplete"], ["orange", "In Progress"], ["green", "Done"],["gray", "None"]]
     for i in range(0, len(colors)):
         square = pie_data.create_rectangle(0, 0, 10, 10, fill=colors[i][0], outline=colors[i][0])  # Make the rectangle larger
         pie_data.move(square, 30, y_)
         label = tk.Label(pie_data, text=colors[i][1], font=("Arial Bold", 15), bg="black", fg="white")
-        label.place(x=50, y=y_)  # Adjust the position of the label within the canvas
+        label.place(x=50, y=y_-5)  # Adjust the position of the label within the canvas
         y_ += 20
 
     y_ = 10
 
     # SUMMARY DATA 
-    summary_label = tk.Label(data_visuals, text="Status Summary", font=("Arial Bold", 15), bg="blue", fg="white", padx= 50)
+    summary_label = tk.Label(data_visuals, text="Status Summary", font=("Arial Bold", 15), bg="blue", fg="white", padx= 45)
     summary_label.place(x=0, y=y_)  # Adjust the position of the label within the canvas
 
     y_ += 40
