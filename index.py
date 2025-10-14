@@ -75,6 +75,11 @@ tasklist_canvas.create_window((0,0), window=scrollable_frame, anchor="nw")
 tasklist_canvas.configure(yscrollcommand=scrollbar.set)
 tasklist_canvas.config(background="#36454F")
 
+def on_mouse_wheel(event):
+    tasklist_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units") 
+
+tasklist_canvas.bind_all("<MouseWheel>", on_mouse_wheel)
+
 pop_up = tk.Frame(bg="red")
 deleteTask = tk.Button(window, text="Delete Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white", highlightthickness=0)
 deleteTask.place(x=250, y=650)
@@ -116,7 +121,7 @@ def update_status():
             done += 1
         elif val[2] == 'Incomplete':
             incomplete += 1
-        elif val[2] == 'InProcess':
+        elif val[2] == 'In Progress':
             inProcess += 1
 
 def calculations():
@@ -173,7 +178,7 @@ def data_visualization():
 
     y_ += 40
 
-    arr = [["Total Tasks:      ", len(data.taskItems)], ["Completed:     ", done], ["In Process:       ", inProcess], ["Missing:            ", incomplete]]
+    arr = [["Total Tasks:      ", len(data.taskItems)], ["Completed:     ", done], ["In Progress:       ", inProcess], ["Missing:            ", incomplete]]
     for item, count in arr:
         # Create a label widget in Tkinter
         label = tk.Label(data_visuals, text = item + " " + str(count),
@@ -198,7 +203,7 @@ def check_task_status(status):
         return "green"
     elif status == "Incomplete" or status == "Incomplete":
         return "red"
-    elif status == "InProcess" or status == "InProcess" :
+    elif status == "In Progress" or status == "In progress" :
         return "orange"
     return "gray"
 
@@ -421,8 +426,8 @@ def pop_up_window(event, title, color, action):
     newTask.pack()
     newTask.place(x=10, y=40)
 
-    option_values = ["Incomplete", "InProcess","Done"]
-    option_values_with_status = {"Incomplete":"Red", "InProcess": "Orange", "Done":"Green"}
+    option_values = ["Incomplete", "In Progress","Done"]
+    option_values_with_status = {"Incomplete":"Red", "In Progress": "Orange", "Done":"Green"}
 
     option_var = tk.StringVar()
     chosen_color = ""
