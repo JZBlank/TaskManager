@@ -22,16 +22,19 @@ TaskManager is a desktop app aimed to help organize and plan out to-do list item
 - [X] Do not allow empty title task to be created
 - [X] Do not allow edit task button to open new window when grayed out
 - [X] Improve exe UI (increased font size to improve alignment and spacing)
+- [X] Add scroll functionality with mouse wheel
 
 ## ToDo Objectives
-- [X] Add scroll functionality with mouse wheel
+- [] Fix description formatting issue (add \n instead of new line when indenting)
 - [] Fix button highlighting not working in exe file
+- [] Fix small UI issues part 4
 
 ## Nice to haves
 - [] Be able to schedule tasks manually weekly/monthly,etc
-- [] Toggle color theme for App (Light vs Dark)
+- [] Add email functionality to send daily/weekly reports automatically
 - [] Add character mascot to screen
 - [] Save completed todo to a google spreadsheet
+- [] Toggle color theme for App (Light vs Dark)
 
 ## APP IMAGES:
 ![image](https://github.com/JZBlank/TaskManager/assets/56086743/4f5cb15d-9335-46cf-aa6e-ede6306c482e)
