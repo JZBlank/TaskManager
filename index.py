@@ -82,11 +82,11 @@ tasklist_canvas.bind_all("<MouseWheel>", on_mouse_wheel)
 
 pop_up = tk.Frame(bg="red")
 deleteTask = tk.Button(window, text="Delete Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white", highlightthickness=0)
-deleteTask.place(x=250, y=650)
+deleteTask.place(x=225, y=650)
 
 editTask = tk.Button(window, text="Edit Task", fg="white", bg="darkgray", activebackground="gray", activeforeground="white", highlightthickness=0)
 editTask.pack(anchor="s")
-editTask.place(x=150, y=650)
+editTask.place(x=140, y=650)
 
 status_values = tk.OptionMenu(pop_up, None, None)
 
@@ -173,12 +173,12 @@ def data_visualization():
     y_ = 10
 
     # SUMMARY DATA 
-    summary_label = tk.Label(data_visuals, text="Status Summary", font=("Arial Bold", 15), bg="blue", fg="white", padx= 45)
+    summary_label = tk.Label(data_visuals, text="Status Summary", font=("Arial Bold", 15), bg="blue", fg="white", padx= 35)
     summary_label.place(x=0, y=y_)  # Adjust the position of the label within the canvas
 
     y_ += 40
 
-    arr = [["Total Tasks:      ", len(data.taskItems)], ["Completed:     ", done], ["In Progress:       ", inProcess], ["Missing:            ", incomplete]]
+    arr = [["Total Tasks:       ", len(data.taskItems)], ["Completed:      ", done], ["In Progress:      ", inProcess], ["Missing:             ", incomplete]]
     for item, count in arr:
         # Create a label widget in Tkinter
         label = tk.Label(data_visuals, text = item + " " + str(count),
