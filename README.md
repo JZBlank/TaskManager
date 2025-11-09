@@ -23,9 +23,9 @@ TaskManager is a desktop app aimed to help organize and plan out to-do list item
 - [X] Do not allow edit task button to open new window when grayed out
 - [X] Improve exe UI (increased font size to improve alignment and spacing)
 - [X] Add scroll functionality with mouse wheel
+- [X] Fix description formatting issue (add \n instead of new line when indenting)
 
 ## ToDo Objectives
-- [] Fix description formatting issue (add \n instead of new line when indenting)
 - [] Fix button highlighting not working in exe file
 - [] Fix small UI issues part 4
 

@@ -269,6 +269,9 @@ def task_item_pop_up(selectedLabel):
     if selectedLabel != -1:
         task_name = data.taskItems[selectedLabel][0]
         task_details = data.taskItems[selectedLabel][1]
+    
+    # Display new line UI 
+    task_details = task_details.replace("\\n", "\n")
 
     task_name = tk.Label(task_data, text=task_name, font=("Arial Bold", 20), bg="black", fg="white")
     task_description = tk.Label(task_data, text=task_details, font=("Arial", 15), bg="black", fg="white", wraplength= 600, justify="left")
@@ -380,11 +383,9 @@ def check_pop_window(event, title, color, action):
     if ontop == False:
         if action == "Add Task":
             ontop = True
-            pop_up_window(event, title, color, action)
         elif action == "Edit Task" and editTask['bg'] != "gray":
             ontop = True
-            pop_up_window(event, title, color, action)
-
+        pop_up_window(event, title, color, action)
 
 def disable_event():
     pass
@@ -494,8 +495,8 @@ def choose_action(event, action, taskText, description, optionVal, errorLabel):
 
 def add_new_task(event, newTask, description, newTaskStatus):
     global pop_up, ontop
-    
-    data.add_task(str(data.totalTasks) + "," + newTask + "," + description + "," + newTaskStatus) # Add data to txt file
+
+    data.add_task(str(data.totalTasks) + "," + newTask + "," + repr(description) + "," + newTaskStatus) # Add data to txt file
     data.taskItems[data.totalTasks] = [newTask, description, newTaskStatus]
 
     pop_up.destroy()
@@ -538,7 +539,7 @@ def edit_task_item_label(event, taskText, description, optionVal):
         sort_taskItemDict()
 
         # Modify Text in Txt File
-        data.edit_task(str(selectedLabel), taskText, description,  optionVal, data.taskItems)
+        data.edit_task(str(selectedLabel), taskText, repr(description), optionVal, data.taskItems)
 
         # Update Data Displayed
         display_task_list()

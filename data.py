@@ -73,7 +73,7 @@ def edit_task(selectedLabel, task, description, status, taskItems):
             with open(name2, "w") as new_data: 
                 index = 0
                 for line in original_data:
-                    new_data.write(str(index) + "," + str(taskItems[index][0]) + "," + str(taskItems[index][1]) + "," + str(taskItems[index][2]) + "\n")
+                    new_data.write(str(index) + "," + str(taskItems[index][0]) + "," + description + "," + str(taskItems[index][2]) + "\n")
                     index += 1
     except:
         print('Error')
